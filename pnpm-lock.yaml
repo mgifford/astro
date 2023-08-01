@@ -483,7 +483,7 @@ importers:
         specifier: ^1.6.3
         version: 1.6.3
       '@astrojs/internal-helpers':
-        specifier: ^0.1.1
+        specifier: workspace:*
         version: link:../internal-helpers
       '@astrojs/language-server':
         specifier: ^1.0.0
@@ -3619,7 +3619,7 @@ importers:
   packages/integrations/cloudflare:
     dependencies:
       '@astrojs/underscore-redirects':
-        specifier: ^0.2.0
+        specifier: workspace:*
         version: link:../../underscore-redirects
       '@cloudflare/workers-types':
         specifier: ^4.20230518.0
@@ -3992,7 +3992,7 @@ importers:
   packages/integrations/markdoc:
     dependencies:
       '@astrojs/internal-helpers':
-        specifier: ^0.1.0
+        specifier: workspace:*
         version: link:../../internal-helpers
       '@astrojs/prism':
         specifier: ^2.1.2
@@ -4421,7 +4421,7 @@ importers:
   packages/integrations/netlify:
     dependencies:
       '@astrojs/underscore-redirects':
-        specifier: ^0.2.0
+        specifier: workspace:*
         version: link:../../underscore-redirects
       '@netlify/functions':
         specifier: ^1.6.0
@@ -4903,7 +4903,7 @@ importers:
   packages/integrations/vercel:
     dependencies:
       '@astrojs/internal-helpers':
-        specifier: ^0.1.1
+        specifier: workspace:*
         version: link:../../internal-helpers
       '@vercel/analytics':
         specifier: ^0.1.11
@@ -5509,10 +5509,6 @@ packages:
   /@astrojs/compiler@1.6.3:
     resolution: {integrity: sha512-n0xTuBznKspc0plk6RHBOlSv/EwQGyMNSxEOPj7HMeiRNnXX4woeSopN9hQsLkqraDds1eRvB4u99buWgVNJig==}
 
-  /@astrojs/internal-helpers@0.1.1:
-    resolution: {integrity: sha512-+LySbvFbjv2nO2m/e78suleQOGEru4Cnx73VsZbrQgB2u7A4ddsQg3P2T0zC0e10jgcT+c6nNlKeLpa6nRhQIg==}
-    dev: false
-
   /@astrojs/language-server@1.0.0:
     resolution: {integrity: sha512-oEw7AwJmzjgy6HC9f5IdrphZ1GVgfV/+7xQuyf52cpTiRWd/tJISK3MsKP0cDkVlfodmNABNFnAaAWuLZEiiiA==}
     hasBin: true
@@ -5577,10 +5573,6 @@ packages:
       which-pm-runs: 1.1.0
     transitivePeerDependencies:
       - supports-color
-    dev: false
-
-  /@astrojs/underscore-redirects@0.2.0:
-    resolution: {integrity: sha512-TP+uEdqMGNC7Lyci6WmbHvvMElBDSyHlTsvGH9E9/2duvD/n4KJVyr59klycEroaZJiAi5tzlXL8Jsl9/R32gQ==}
     dev: false
 
   /@astrojs/webapi@2.2.0:
@@ -18556,7 +18548,7 @@ packages:
         optional: true
     dependencies:
       '@astrojs/compiler': 1.6.3
-      '@astrojs/internal-helpers': 0.1.1
+      '@astrojs/internal-helpers': link:packages/internal-helpers
       '@astrojs/language-server': 1.0.0
       '@astrojs/markdown-remark': 2.2.1(astro@2.9.6)
       '@astrojs/telemetry': 2.1.1
@@ -18663,7 +18655,7 @@ packages:
     peerDependencies:
       astro: '*'
     dependencies:
-      '@astrojs/underscore-redirects': 0.2.0
+      '@astrojs/underscore-redirects': link:packages/underscore-redirects
       '@astrojs/webapi': 2.2.0
       '@netlify/functions': 1.6.0
       astro: file:packages/astro(@types/node@18.16.18)
@@ -18678,7 +18670,7 @@ packages:
     peerDependencies:
       astro: '*'
     dependencies:
-      '@astrojs/internal-helpers': 0.1.1
+      '@astrojs/internal-helpers': link:packages/internal-helpers
       '@astrojs/webapi': 2.2.0
       '@vercel/analytics': 0.1.11
       '@vercel/nft': 0.22.6
