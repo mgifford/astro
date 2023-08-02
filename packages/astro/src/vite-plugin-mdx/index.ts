@@ -1,7 +1,6 @@
 import type { TransformResult } from 'rollup';
 import {
 	transformWithEsbuild,
-	type EsbuildTransformOptions,
 	type Plugin,
 	type ResolvedConfig,
 } from 'vite';
@@ -10,7 +9,6 @@ import type { LogOptions } from '../core/logger/core.js';
 import type { PluginMetadata } from '../vite-plugin-astro/types';
 
 import babel from '@babel/core';
-import path from 'node:path';
 import { CONTENT_FLAG, PROPAGATED_ASSET_FLAG } from '../content/index.js';
 import { astroEntryPrefix } from '../core/build/plugins/plugin-component-entry.js';
 import { removeQueryString } from '../core/path.js';
@@ -88,7 +86,7 @@ const SPECIAL_QUERY_REGEX = new RegExp(
 );
 
 /** Use Astro config to allow for alternate or multiple JSX renderers (by default Vite will assume React) */
-export default function mdxVitePlugin({ settings, logging }: AstroPluginJSXOptions): Plugin {
+export default function mdxVitePlugin({ settings }: AstroPluginJSXOptions): Plugin {
 	let viteConfig: ResolvedConfig;
 	// A reference to Astro's internal JSX renderer.
 	let astroJSXRenderer: AstroRenderer;
@@ -99,7 +97,6 @@ export default function mdxVitePlugin({ settings, logging }: AstroPluginJSXOptio
 		async configResolved(resolvedConfig) {
 			viteConfig = resolvedConfig;
 			astroJSXRenderer = settings.renderers.find((r) => r.jsxImportSource === 'astro')!;
-			console.log(settings.renderers);
 		},
 		async transform(code, id, opts) {
 			// Skip special queries and astro entries. We skip astro entries here as we know it doesn't contain

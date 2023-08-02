@@ -22,7 +22,7 @@ function getRenderer() {
 	};
 }
 
-function getViteConfiguration({include, exclude}: Options) {
+function getViteConfiguration({include, exclude}: Options = {}) {
 	return {
 		optimizeDeps: {
 			include: [
@@ -61,7 +61,7 @@ function getViteConfiguration({include, exclude}: Options) {
 }
 
 export type Options =Pick<ViteReactPluginOptions, 'include' | 'exclude'>;
-export default function ({include, exclude}: Pick<ViteReactPluginOptions, 'include' | 'exclude'>): AstroIntegration {
+export default function ({include, exclude}: Pick<ViteReactPluginOptions, 'include' | 'exclude'> = {}): AstroIntegration {
 	return {
 		name: '@astrojs/react',
 		hooks: {

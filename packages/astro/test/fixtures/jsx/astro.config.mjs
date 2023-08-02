@@ -6,8 +6,20 @@ import svelte from '@astrojs/svelte';
 import vue from '@astrojs/vue';
 import solid from '@astrojs/solid-js';
 
+
 export default defineConfig({
 	integrations: [
+		preact({
+			include: ['**/preact/*']
+		}),
+		react({
+			include: ['**/react/*']
+		}),
+		solid({
+			include: ['**/solid/*'],
+		}),
+		svelte(),
+		vue(),
 		{
 			name: '@astrojs/test-jsx',
 			hooks: {
@@ -16,10 +28,5 @@ export default defineConfig({
 				}
 			}
 		},
-		preact(),
-		react(),
-		svelte(),
-		vue(),
-		solid(),
 	]
 })

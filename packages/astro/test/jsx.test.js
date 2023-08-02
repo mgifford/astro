@@ -24,7 +24,7 @@ describe('jsx-runtime', () => {
 		const html = await fixture.readFile('/frameworks/index.html');
 		const $ = cheerio.load(html);
 
-		expect($('#has-preact #preact').length).to.equal(1);
+		expect($('#has-preact #preact').length).to.equal(0);
 		expect($('#preact').text()).to.include('Preact');
 	});
 
@@ -32,7 +32,7 @@ describe('jsx-runtime', () => {
 		const html = await fixture.readFile('/frameworks/index.html');
 		const $ = cheerio.load(html);
 
-		expect($('#has-react #react').length).to.equal(1);
+		expect($('#has-react #react').length).to.equal(0);
 		expect($('#react').text()).to.include('React');
 	});
 
@@ -40,7 +40,7 @@ describe('jsx-runtime', () => {
 		const html = await fixture.readFile('/frameworks/index.html');
 		const $ = cheerio.load(html);
 
-		expect($('#has-solid #solid').length).to.equal(1);
+		expect($('#has-solid #solid').length).to.equal(0);
 		expect($('#solid').text()).to.include('Solid');
 	});
 
@@ -48,7 +48,7 @@ describe('jsx-runtime', () => {
 		const html = await fixture.readFile('/frameworks/index.html');
 		const $ = cheerio.load(html);
 
-		expect($('#has-svelte #svelte').length).to.equal(1);
+		expect($('#has-svelte #svelte').length).to.equal(0);
 		expect($('#svelte').text()).to.include('Svelte');
 	});
 
@@ -56,7 +56,7 @@ describe('jsx-runtime', () => {
 		const html = await fixture.readFile('/frameworks/index.html');
 		const $ = cheerio.load(html);
 
-		expect($('#has-vue #vue').length).to.equal(1);
+		expect($('#has-vue #vue').length).to.equal(0);
 		expect($('#vue').text()).to.include('Vue');
 	});
 });

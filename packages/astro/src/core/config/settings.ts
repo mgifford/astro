@@ -3,7 +3,6 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import type { AstroConfig, AstroSettings, AstroUserConfig } from '../../@types/astro';
 import { getContentPaths } from '../../content/index.js';
-import jsxRenderer from '../../jsx/renderer.js';
 import { isServerLikeOutput } from '../../prerender/utils.js';
 import { markdownContentEntryType } from '../../vite-plugin-markdown/content-entry-type.js';
 import { getDefaultClientDirectives } from '../client-directive/index.js';
@@ -100,7 +99,7 @@ export function createBaseSettings(config: AstroConfig, mode: 'build' | 'dev'): 
 				},
 			},
 		],
-		renderers: [jsxRenderer],
+		renderers: [],
 		scripts: [],
 		clientDirectives: getDefaultClientDirectives(),
 		watchFiles: [],
