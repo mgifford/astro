@@ -18,7 +18,6 @@ export function createBaseSettings(config: AstroConfig): AstroSettings {
 		config,
 		tsConfig: undefined,
 		tsConfigPath: undefined,
-
 		adapter: undefined,
 		injectedRoutes: [],
 		pageExtensions: ['.astro', '.html', ...SUPPORTED_MARKDOWN_FILE_EXTENSIONS],

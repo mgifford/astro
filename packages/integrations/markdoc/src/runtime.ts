@@ -7,8 +7,7 @@ import Markdoc, {
 } from '@markdoc/markdoc';
 import type { AstroInstance } from 'astro';
 import { createComponent, renderComponent } from 'astro/runtime/server/index.js';
-import type { AstroMarkdocConfig } from './config.js';
-import { setupHeadingConfig } from './heading-ids.js';
+import { baseConfig, type AstroMarkdocConfig } from './config.js';
 import { htmlTag } from './html/tagdefs/html.tag.js';
 import type { MarkdocIntegrationOptions } from './options.js';
 
@@ -21,7 +20,7 @@ export async function setupConfig(
 	userConfig: AstroMarkdocConfig = {},
 	options: MarkdocIntegrationOptions | undefined
 ): Promise<MergedConfig> {
-	let defaultConfig: AstroMarkdocConfig = setupHeadingConfig();
+	let defaultConfig: AstroMarkdocConfig = baseConfig;
 
 	if (userConfig.extends) {
 		for (let extension of userConfig.extends) {
@@ -47,7 +46,7 @@ export function setupConfigSync(
 	userConfig: AstroMarkdocConfig = {},
 	options: MarkdocIntegrationOptions | undefined
 ): MergedConfig {
-	const defaultConfig: AstroMarkdocConfig = setupHeadingConfig();
+	const defaultConfig: AstroMarkdocConfig = baseConfig;
 
 	let merged = mergeConfig(defaultConfig, userConfig);
 

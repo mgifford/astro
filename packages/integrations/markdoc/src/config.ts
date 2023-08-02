@@ -8,7 +8,9 @@ import type {
 } from '@markdoc/markdoc';
 import _Markdoc from '@markdoc/markdoc';
 import type { AstroInstance } from 'astro';
-import { heading } from './heading-ids.js';
+import { assetsConfig } from './assets-config.js';
+import { heading, setupHeadingConfig } from './heading-ids.js';
+import { mergeConfig } from './runtime.js';
 import { componentConfigSymbol } from './utils.js';
 
 export type Render = ComponentConfig | AstroInstance['default'] | string;
@@ -51,3 +53,5 @@ export function component(pathnameOrPkgName: string, namedExport?: string): Comp
 function isNpmPackageName(pathname: string) {
 	return !isRelativePath(pathname) && !pathname.startsWith('/');
 }
+
+export const baseConfig = mergeConfig(setupHeadingConfig(), assetsConfig);

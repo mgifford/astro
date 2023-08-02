@@ -72,7 +72,7 @@ export default function mdx(partialMdxOptions: Partial<MdxOptions> = {}): AstroI
 				});
 
 				const mdxPluginOpts: CompileOptions = {
-					remarkPlugins: await getRemarkPlugins(mdxOptions, config),
+					remarkPlugins: await getRemarkPlugins(mdxOptions),
 					rehypePlugins: getRehypePlugins(mdxOptions),
 					recmaPlugins: mdxOptions.recmaPlugins,
 					remarkRehypeOptions: mdxOptions.remarkRehype,

@@ -131,13 +131,7 @@ export const _internal = {
 			configureServer(viteServer) {
 				viteServer.watcher.on('all', async (event, entry) => {
 					if (CHOKIDAR_MODIFIED_EVENTS.includes(event)) {
-						const entryType = getEntryType(
-							entry,
-							contentPaths,
-							contentEntryExts,
-							dataEntryExts,
-							settings.config.experimental.assets
-						);
+						const entryType = getEntryType(entry, contentPaths, contentEntryExts, dataEntryExts);
 						if (!COLLECTION_TYPES_TO_INVALIDATE_ON.includes(entryType)) return;
 
 						// The content config could depend on collection entries via `reference()`.

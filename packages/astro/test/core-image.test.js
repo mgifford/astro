@@ -20,9 +20,6 @@ describe('astro:image', () => {
 		before(async () => {
 			fixture = await loadFixture({
 				root: './fixtures/core-image/',
-				experimental: {
-					assets: true,
-				},
 				image: {
 					service: testImageService({ foo: 'bar' }),
 				},
@@ -421,9 +418,6 @@ describe('astro:image', () => {
 		before(async () => {
 			fixture = await loadFixture({
 				root: './fixtures/core-image-errors/',
-				experimental: {
-					assets: true,
-				},
 				image: {
 					service: testImageService(),
 				},
@@ -489,9 +483,6 @@ describe('astro:image', () => {
 		before(async () => {
 			fixture = await loadFixture({
 				root: './fixtures/core-image-base/',
-				experimental: {
-					assets: true,
-				},
 				image: {
 					service: testImageService(),
 				},
@@ -545,9 +536,6 @@ describe('astro:image', () => {
 				root: './fixtures/core-image-ssr/',
 				output: 'server',
 				adapter: testAdapter(),
-				experimental: {
-					assets: true,
-				},
 				image: {
 					service: testImageService(),
 				},
@@ -569,9 +557,6 @@ describe('astro:image', () => {
 		before(async () => {
 			fixture = await loadFixture({
 				root: './fixtures/core-image-ssg/',
-				experimental: {
-					assets: true,
-				},
 				image: {
 					service: testImageService(),
 				},
@@ -735,9 +720,6 @@ describe('astro:image', () => {
 				root: './fixtures/core-image-ssr/',
 				output: 'server',
 				adapter: testAdapter(),
-				experimental: {
-					assets: true,
-				},
 				image: {
 					service: testImageService(),
 				},
@@ -762,9 +744,6 @@ describe('astro:image', () => {
 				root: './fixtures/core-image-ssr/',
 				output: 'server',
 				adapter: testAdapter(),
-				experimental: {
-					assets: true,
-				},
 				image: {
 					service: testImageService(),
 				},

@@ -4,12 +4,7 @@ import esbuild from 'esbuild';
 import { relative as relativePath } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import {
-	defaultImageConfig,
-	getImageConfig,
-	throwIfAssetsNotEnabled,
-	type VercelImageConfig,
-} from '../image/shared.js';
+import { defaultImageConfig, getImageConfig, type VercelImageConfig } from '../image/shared.js';
 import { exposeEnv } from '../lib/env.js';
 import {
 	copyFilesToFunction,
@@ -84,7 +79,6 @@ export default function vercelEdge({
 				});
 			},
 			'astro:config:done': ({ setAdapter, config }) => {
-				throwIfAssetsNotEnabled(config, imageService);
 				setAdapter(getAdapter());
 				_config = config;
 				buildTempFolder = config.build.server;
