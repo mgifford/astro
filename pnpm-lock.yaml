@@ -4829,6 +4829,9 @@ importers:
       solid-js:
         specifier: ^1.7.6
         version: 1.7.6
+      vitefu:
+        specifier: ^0.2.4
+        version: 0.2.4(vite@4.3.9)
 
   packages/integrations/svelte:
     dependencies:
@@ -17785,7 +17788,6 @@ packages:
         optional: true
     dependencies:
       vite: 4.3.9(@types/node@18.16.18)(sass@1.63.4)
-    dev: false
 
   /vitest@0.31.4:
     resolution: {integrity: sha512-GoV0VQPmWrUFOZSg3RpQAPN+LPmHg2/gxlMNJlyxJihkz6qReHDV6b0pPDcqFLNEPya4tWJ1pgwUNP9MLmUfvQ==}
@@ -18490,6 +18492,7 @@ packages:
     resolution: {directory: packages/astro, type: directory}
     id: file:packages/astro
     name: astro
+    version: 2.9.1
     engines: {node: '>=16.12.0', npm: '>=6.14.0'}
     hasBin: true
     peerDependencies:
@@ -18574,21 +18577,25 @@ packages:
   file:packages/astro/test/fixtures/css-assets/packages/font-awesome:
     resolution: {directory: packages/astro/test/fixtures/css-assets/packages/font-awesome, type: directory}
     name: '@test/astro-font-awesome-package'
+    version: 0.0.1
     dev: false
 
   file:packages/astro/test/fixtures/multiple-renderers/renderers/one:
     resolution: {directory: packages/astro/test/fixtures/multiple-renderers/renderers/one, type: directory}
     name: '@test/astro-renderer-one'
+    version: 1.0.0
     dev: false
 
   file:packages/astro/test/fixtures/multiple-renderers/renderers/two:
     resolution: {directory: packages/astro/test/fixtures/multiple-renderers/renderers/two, type: directory}
     name: '@test/astro-renderer-two'
+    version: 1.0.0
     dev: false
 
   file:packages/astro/test/fixtures/solid-component/deps/solid-jsx-component:
     resolution: {directory: packages/astro/test/fixtures/solid-component/deps/solid-jsx-component, type: directory}
     name: '@test/solid-jsx-component'
+    version: 0.0.0
     dependencies:
       solid-js: 1.7.6
     dev: false
@@ -18597,6 +18604,7 @@ packages:
     resolution: {directory: packages/integrations/netlify, type: directory}
     id: file:packages/integrations/netlify
     name: '@astrojs/netlify'
+    version: 2.5.0
     peerDependencies:
       astro: '*'
     dependencies:
@@ -18611,6 +18619,7 @@ packages:
     resolution: {directory: packages/integrations/vercel, type: directory}
     id: file:packages/integrations/vercel
     name: '@astrojs/vercel'
+    version: 3.7.4
     peerDependencies:
       astro: '*'
     dependencies:
