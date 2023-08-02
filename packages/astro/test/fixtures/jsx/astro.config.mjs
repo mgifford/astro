@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import renderer from 'astro/jsx/renderer.js';
+import mdx from '@astrojs/mdx';
 import preact from '@astrojs/preact';
 import react from '@astrojs/react';
 import svelte from '@astrojs/svelte';
@@ -18,6 +19,7 @@ export default defineConfig({
 		solid({
 			include: ['**/solid/*'],
 		}),
+		mdx(),
 		svelte(),
 		vue(),
 		{
