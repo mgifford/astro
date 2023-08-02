@@ -188,7 +188,7 @@ type GetEntryModuleParams<TEntryType extends ContentEntryType | DataEntryType> =
 async function getContentEntryModule(
 	params: GetEntryModuleParams<ContentEntryType>
 ): Promise<ContentEntryModule> {
-	const { fileId, contentDir, pluginContext, config } = params;
+	const { fileId, contentDir, pluginContext } = params;
 	const { collectionConfig, entryConfig, entry, rawContents, collection } =
 		await getEntryModuleBaseInfo(params);
 
@@ -215,8 +215,7 @@ async function getContentEntryModule(
 		? await getEntryData(
 				{ id, collection, _internal, unvalidatedData },
 				collectionConfig,
-				pluginContext,
-				config
+				pluginContext
 		  )
 		: unvalidatedData;
 
@@ -235,7 +234,7 @@ async function getContentEntryModule(
 async function getDataEntryModule(
 	params: GetEntryModuleParams<DataEntryType>
 ): Promise<DataEntryModule> {
-	const { fileId, contentDir, pluginContext, config } = params;
+	const { fileId, contentDir, pluginContext } = params;
 	const { collectionConfig, entryConfig, entry, rawContents, collection } =
 		await getEntryModuleBaseInfo(params);
 
@@ -250,8 +249,7 @@ async function getDataEntryModule(
 		? await getEntryData(
 				{ id, collection, _internal, unvalidatedData },
 				collectionConfig,
-				pluginContext,
-				config
+				pluginContext
 		  )
 		: unvalidatedData;
 

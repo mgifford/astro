@@ -93,8 +93,7 @@ export async function getEntryData(
 		_internal: EntryInternal;
 	},
 	collectionConfig: CollectionConfig,
-	pluginContext: PluginContext,
-	config: AstroConfig
+	pluginContext: PluginContext
 ) {
 	let data;
 	if (collectionConfig.type === 'data') {
