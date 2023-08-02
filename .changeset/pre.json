@@ -32,5 +32,34 @@
     "@astrojs/telemetry": "2.1.1",
     "@astrojs/underscore-redirects": "0.2.0"
   },
-  "changesets": []
+  "changesets": [
+    "afraid-dots-whisper",
+    "big-suns-wave",
+    "chilled-ducks-grin",
+    "cuddly-snails-boil",
+    "dirty-lies-cover",
+    "fair-emus-divide",
+    "famous-queens-itch",
+    "four-houses-compete",
+    "heavy-cooks-laugh",
+    "heavy-walls-arrive",
+    "honest-moose-type",
+    "loud-candles-admire",
+    "mighty-dancers-lay",
+    "new-ants-speak",
+    "odd-books-live",
+    "rich-toys-jog",
+    "rude-ears-play",
+    "sour-pants-agree",
+    "spicy-eels-rush",
+    "three-adults-exist",
+    "three-onions-repeat",
+    "tricky-candles-suffer",
+    "twelve-coats-rush",
+    "twenty-cheetahs-deny",
+    "twenty-oranges-poke",
+    "unlucky-hotels-try",
+    "unlucky-sheep-build",
+    "young-roses-teach"
+  ]
 }

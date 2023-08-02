@@ -1,5 +1,223 @@
 # astro
 
+## 3.0.0-beta.0
+
+### Major Changes
+
+- [#7878](https://github.com/withastro/astro/pull/7878) [`329bacd74`](https://github.com/withastro/astro/commit/329bacd74681698cd4c1669ecd0ec177e5823ea1) Thanks [@bluwy](https://github.com/bluwy)! - Remove support for Node 16. The lowest supported version by Astro and all integrations is now v18.14.1. As a reminder, Node 16 will be deprecated on the 11th September 2023.
+
+- [#7878](https://github.com/withastro/astro/pull/7878) [`a4f30d2fd`](https://github.com/withastro/astro/commit/a4f30d2fd4aa2e6ae9feec61e80ab080ddc57587) Thanks [@bluwy](https://github.com/bluwy)! - Removed automatic flattening of `getStaticPaths` result. `.flatMap` and `.flat` should now be used to ensure that you're returning a flat array.
+
+- [#7878](https://github.com/withastro/astro/pull/7878) [`c17e265c0`](https://github.com/withastro/astro/commit/c17e265c0d315a7fa23cfe36e0eeb8e24dd073e9) Thanks [@bluwy](https://github.com/bluwy)! - The `build.split` and `build.excludeMiddleware` configuration options are deprecated and have been replaced by options in the adapter config.
+
+  If your config includes the `build.excludeMiddleware` option, replace it with `edgeMiddleware` in your adapter options:
+
+  ```diff
+  import { defineConfig } from "astro/config";
+  import netlify from "@astrojs/netlify/functions";
+
+  export default defineConfig({
+       build: {
+  -        excludeMiddleware: true
+       },
+       adapter: netlify({
+  +        edgeMiddleware: true
+       }),
+  });
+  ```
+
+  If your config includes the `build.split` option, replace it with `functionPerRoute` in your adapter options:
+
+  ```diff
+  import { defineConfig } from "astro/config";
+  import netlify from "@astrojs/netlify/functions";
+
+  export default defineConfig({
+       build: {
+  -        split: true
+       },
+       adapter: netlify({
+  +        functionPerRoute: true
+       }),
+  });
+  ```
+
+- [#7908](https://github.com/withastro/astro/pull/7908) [`510312206`](https://github.com/withastro/astro/commit/510312206d704f6cc58733a8b3ec3bf28f9ae2eb) Thanks [@Princesseuh](https://github.com/Princesseuh)! - Sharp is now the default image service used for `astro:assets`. If you would prefer to still use Squoosh, you can update your config with the following:
+
+  ```ts
+  import { defineConfig, squooshImageService } from 'astro/config';
+
+  // https://astro.build/config
+  export default defineConfig({
+    image: {
+      service: squooshImageService(),
+    },
+  });
+  ```
+
+  However, not only do we recommend using Sharp as it is faster and more reliable, it is also highly likely that the Squoosh service will be removed in a future release.
+
+- [#7903](https://github.com/withastro/astro/pull/7903) [`196239284`](https://github.com/withastro/astro/commit/1962392847071f8e4dd1ebedf60822864891781f) Thanks [@Princesseuh](https://github.com/Princesseuh)! - When using an adapter that supports neither Squoosh or Sharp, Astro will now automatically use an image service that does not support processing, but still provides the other benefits of `astro:assets` such as enforcing `alt`, no CLS etc to users
+
+- [#7878](https://github.com/withastro/astro/pull/7878) [`297b1966b`](https://github.com/withastro/astro/commit/297b1966b91a77c4364ba9a00afeaf3e47a6ebcb) Thanks [@bluwy](https://github.com/bluwy)! - Removed support for old syntax of the API routes.
+
+- [#7878](https://github.com/withastro/astro/pull/7878) [`a05d452a2`](https://github.com/withastro/astro/commit/a05d452a2f7df86d825f9db9fe031df72756429f) Thanks [@bluwy](https://github.com/bluwy)! - Remove MDX plugin re-ordering hack
+
+- [#7878](https://github.com/withastro/astro/pull/7878) [`19e91e1cd`](https://github.com/withastro/astro/commit/19e91e1cd8bf8604b64ec00fdaa552d36fe13088) Thanks [@bluwy](https://github.com/bluwy)! - Reduced the amount of polyfills provided by Astro. Astro will no longer provide (no-op) polyfills for several web apis such as HTMLElement, Image or Document. If you need access to those APIs on the server, we recommend using more proper polyfills available on npm.
+
+- [#7878](https://github.com/withastro/astro/pull/7878) [`6f3180b1f`](https://github.com/withastro/astro/commit/6f3180b1fad9ae7212671f57362cae42a2c53168) Thanks [@bluwy](https://github.com/bluwy)! - Update `tsconfig.json` presets with `moduleResolution: 'bundler'` and other new options from TypeScript 5.0. Astro now assumes that you use TypeScript 5.0 (March 2023), or that your editor includes it, ex: VS Code 1.77
+
+- [#7892](https://github.com/withastro/astro/pull/7892) [`ea60a1139`](https://github.com/withastro/astro/commit/ea60a113991528959bdd0bd40bd0e22064f1ae23) Thanks [@Princesseuh](https://github.com/Princesseuh)! - The `astro check` command now requires an external package `@astrojs/check` and an install of `typescript` in your project. This was done in order to make the main `astro` package smaller and give more flexibility to users in regard to the version of TypeScript they use.
+
+- [#7878](https://github.com/withastro/astro/pull/7878) [`c17e265c0`](https://github.com/withastro/astro/commit/c17e265c0d315a7fa23cfe36e0eeb8e24dd073e9) Thanks [@bluwy](https://github.com/bluwy)! - The `build.split` and `build.excludeMiddleware` configuration options are deprecated and have been replaced by options in the adapter config.
+
+  If your config includes the `build.excludeMiddleware` option, replace it with `edgeMiddleware` in your adapter options:
+
+  ```diff
+  import { defineConfig } from "astro/config";
+  import vercel from "@astrojs/vercel/serverless";
+
+  export default defineConfig({
+       build: {
+  -        excludeMiddleware: true
+       },
+       adapter: vercel({
+  +        edgeMiddleware: true
+       }),
+  });
+  ```
+
+  If your config includes the `build.split` option, replace it with `functionPerRoute` in your adapter options:
+
+  ```diff
+  import { defineConfig } from "astro/config";
+  import vercel from "@astrojs/vercel/serverless";
+
+  export default defineConfig({
+       build: {
+  -        split: true
+       },
+       adapter: vercel({
+  +        functionPerRoute: true
+       }),
+  });
+  ```
+
+- [#7878](https://github.com/withastro/astro/pull/7878) [`a6e513576`](https://github.com/withastro/astro/commit/a6e5135765cc6bac54bcc1d2f80412d61b1084a8) Thanks [@bluwy](https://github.com/bluwy)! - Lowercase names for endpoint functions are now deprecated.
+
+  Rename functions to their uppercase equivalent:
+
+  ```diff
+  - export function get() {
+  + export function GET() {
+      return new Response(JSON.stringify({ "title": "Bob's blog" }));
+  }
+
+  - export function post() {
+  + export function POST() {
+      return new Response(JSON.stringify({ "title": "Bob's blog" }));
+  }
+
+  - export function put() {
+  + export function PUT() {
+      return new Response(JSON.stringify({ "title": "Bob's blog" }));
+  }
+
+  - export function all() {
+  + export function ALL() {
+      return new Response(JSON.stringify({ "title": "Bob's blog" }));
+  }
+
+  // you can use the whole word "DELETE"
+  - export function del() {
+  + export function DELETE() {
+      return new Response(JSON.stringify({ "title": "Bob's blog" }));
+  }
+  ```
+
+- [#7878](https://github.com/withastro/astro/pull/7878) [`e4258f248`](https://github.com/withastro/astro/commit/e4258f248a2ae41d12466d94f42015e2e58da4c8) Thanks [@bluwy](https://github.com/bluwy)! - Astro.cookies.get(key) returns undefined if cookie doesn't exist
+
+  With this change, Astro.cookies.get(key) no longer always returns a `AstroCookie` object. Instead it now returns `undefined` if the cookie does not exist.
+
+  You should update your code if you assume that all calls to `get()` return a value. When using with `has()` you still need to assert the value, like so:
+
+  ```astro
+  ---
+  if (Astro.cookies.has(id)) {
+    const id = Astro.cookies.get(id)!;
+  }
+  ---
+  ```
+
+- [#7874](https://github.com/withastro/astro/pull/7874) [`1b7dd1182`](https://github.com/withastro/astro/commit/1b7dd118231f0c8b35a955aa637856b46e1fa815) Thanks [@ematipico](https://github.com/ematipico)! - Astro's default port when running the dev or preview server is now `4321`.
+
+  This will reduce conflicts with ports used by other tools.
+
+- [#7904](https://github.com/withastro/astro/pull/7904) [`25b89359e`](https://github.com/withastro/astro/commit/25b89359e90dac3a79c4282f07901e76133b71fa) Thanks [@bluwy](https://github.com/bluwy)! - Remove MDX special `components` export handling
+
+### Minor Changes
+
+- [#7878](https://github.com/withastro/astro/pull/7878) [`ec273342e`](https://github.com/withastro/astro/commit/ec273342e549f9290b17c1d3a8d7f688739786a6) Thanks [@bluwy](https://github.com/bluwy)! - Introduced the concept of feature map. A feature map is a list of features that are built-in in Astro, and an Adapter
+  can tell Astro if it can support it.
+
+  ```ts
+  import { AstroIntegration } from './astro';
+
+  function myIntegration(): AstroIntegration {
+    return {
+      name: 'astro-awesome-list',
+      // new feature map
+      supportedAstroFeatures: {
+        hybridOutput: 'experimental',
+        staticOutput: 'stable',
+        serverOutput: 'stable',
+        assets: {
+          supportKind: 'stable',
+          isSharpCompatible: false,
+          isSquooshCompatible: false,
+        },
+      },
+    };
+  }
+  ```
+
+- [#7878](https://github.com/withastro/astro/pull/7878) [`7ee186155`](https://github.com/withastro/astro/commit/7ee18615573b6f72c2b8d210262dc1551eddf07e) Thanks [@bluwy](https://github.com/bluwy)! - Integrations can now log messages using Astro’s built-in logger.
+
+  The logger is available to all hooks as an additional parameter:
+
+  ```ts
+  import { AstroIntegration } from './astro';
+
+  // integration.js
+  export function myIntegration(): AstroIntegration {
+    return {
+      name: 'my-integration',
+      hooks: {
+        'astro:config:done': ({ logger }) => {
+          logger.info('Configure integration...');
+        },
+      },
+    };
+  }
+  ```
+
+### Patch Changes
+
+- [#7754](https://github.com/withastro/astro/pull/7754) [`298dbb89f`](https://github.com/withastro/astro/commit/298dbb89f2963a547370b6e65cafd2650fdb1b27) Thanks [@natemoo-re](https://github.com/natemoo-re)! - Refactor `404` and `500` route handling for consistency and improved prerendering support
+
+- [#7885](https://github.com/withastro/astro/pull/7885) [`9e2203847`](https://github.com/withastro/astro/commit/9e22038472c8be05ed7a72620534b88324dce793) Thanks [@andremralves](https://github.com/andremralves)! - Fix incorrect build path logging for 404.astro pages.
+
+- [#7895](https://github.com/withastro/astro/pull/7895) [`0b8375fe8`](https://github.com/withastro/astro/commit/0b8375fe82a15bfff3f517f98de6454adb2779f1) Thanks [@bluwy](https://github.com/bluwy)! - Fix streaming Astro components
+
+- [#7876](https://github.com/withastro/astro/pull/7876) [`89d015db6`](https://github.com/withastro/astro/commit/89d015db6ce4d15b5b1140f0eb6bfbef187d6ad7) Thanks [@ematipico](https://github.com/ematipico)! - Check for `getStaticPaths` only if the file has the `.astro` extension.
+
+- [#7879](https://github.com/withastro/astro/pull/7879) [`ebf7ebbf7`](https://github.com/withastro/astro/commit/ebf7ebbf7ae767625d736fad327954cfb853837e) Thanks [@bluwy](https://github.com/bluwy)! - Refactor and improve Astro config loading flow
+
+- Updated dependencies [[`329bacd74`](https://github.com/withastro/astro/commit/329bacd74681698cd4c1669ecd0ec177e5823ea1)]:
+  - @astrojs/telemetry@3.0.0-beta.0
+  - @astrojs/internal-helpers@0.2.0-beta.0
+  - @astrojs/markdown-remark@3.0.0-beta.0
+
 ## 2.9.6
 
 ### Patch Changes

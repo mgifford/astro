@@ -1,5 +1,16 @@
 # @astrojs/image
 
+## 1.0.0-beta.0
+
+### Minor Changes
+
+- [#7878](https://github.com/withastro/astro/pull/7878) [`329bacd74`](https://github.com/withastro/astro/commit/329bacd74681698cd4c1669ecd0ec177e5823ea1) Thanks [@bluwy](https://github.com/bluwy)! - Remove support for Node 16. The lowest supported version by Astro and all integrations is now v18.14.1. As a reminder, Node 16 will be deprecated on the 11th September 2023.
+
+### Patch Changes
+
+- Updated dependencies [[`329bacd74`](https://github.com/withastro/astro/commit/329bacd74681698cd4c1669ecd0ec177e5823ea1), [`298dbb89f`](https://github.com/withastro/astro/commit/298dbb89f2963a547370b6e65cafd2650fdb1b27), [`a4f30d2fd`](https://github.com/withastro/astro/commit/a4f30d2fd4aa2e6ae9feec61e80ab080ddc57587), [`9e2203847`](https://github.com/withastro/astro/commit/9e22038472c8be05ed7a72620534b88324dce793), [`ec273342e`](https://github.com/withastro/astro/commit/ec273342e549f9290b17c1d3a8d7f688739786a6), [`c17e265c0`](https://github.com/withastro/astro/commit/c17e265c0d315a7fa23cfe36e0eeb8e24dd073e9), [`510312206`](https://github.com/withastro/astro/commit/510312206d704f6cc58733a8b3ec3bf28f9ae2eb), [`196239284`](https://github.com/withastro/astro/commit/1962392847071f8e4dd1ebedf60822864891781f), [`297b1966b`](https://github.com/withastro/astro/commit/297b1966b91a77c4364ba9a00afeaf3e47a6ebcb), [`0b8375fe8`](https://github.com/withastro/astro/commit/0b8375fe82a15bfff3f517f98de6454adb2779f1), [`7ee186155`](https://github.com/withastro/astro/commit/7ee18615573b6f72c2b8d210262dc1551eddf07e), [`a05d452a2`](https://github.com/withastro/astro/commit/a05d452a2f7df86d825f9db9fe031df72756429f), [`89d015db6`](https://github.com/withastro/astro/commit/89d015db6ce4d15b5b1140f0eb6bfbef187d6ad7), [`19e91e1cd`](https://github.com/withastro/astro/commit/19e91e1cd8bf8604b64ec00fdaa552d36fe13088), [`6f3180b1f`](https://github.com/withastro/astro/commit/6f3180b1fad9ae7212671f57362cae42a2c53168), [`ea60a1139`](https://github.com/withastro/astro/commit/ea60a113991528959bdd0bd40bd0e22064f1ae23), [`c17e265c0`](https://github.com/withastro/astro/commit/c17e265c0d315a7fa23cfe36e0eeb8e24dd073e9), [`a6e513576`](https://github.com/withastro/astro/commit/a6e5135765cc6bac54bcc1d2f80412d61b1084a8), [`e4258f248`](https://github.com/withastro/astro/commit/e4258f248a2ae41d12466d94f42015e2e58da4c8), [`ebf7ebbf7`](https://github.com/withastro/astro/commit/ebf7ebbf7ae767625d736fad327954cfb853837e), [`1b7dd1182`](https://github.com/withastro/astro/commit/1b7dd118231f0c8b35a955aa637856b46e1fa815), [`25b89359e`](https://github.com/withastro/astro/commit/25b89359e90dac3a79c4282f07901e76133b71fa)]:
+  - astro@3.0.0-beta.0
+
 ## 0.17.2
 
 ### Patch Changes
