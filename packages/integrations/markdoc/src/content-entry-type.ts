@@ -3,23 +3,27 @@ import Markdoc from '@markdoc/markdoc';
 import type { AstroConfig, ContentEntryType } from 'astro';
 import matter from 'gray-matter';
 import fs from 'node:fs';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type * as rollup from 'rollup';
 import type { ErrorPayload as ViteErrorPayload } from 'vite';
 import type { ComponentConfig } from './config.js';
 import { MarkdocError, isComponentConfig, isValidUrl, prependForwardSlash } from './utils.js';
-// @ts-expect-error Cannot get the types here without `moduleResolution: 'nodenext'`
 import { emitESMImage } from 'astro/assets/utils';
-import path from 'node:path';
-import type * as rollup from 'rollup';
+import { htmlTokenTransform } from './html/transform/html-token-transform.js';
 import type { MarkdocConfigResult } from './load-config.js';
+import type { MarkdocIntegrationOptions } from './options.js';
 import { setupConfig } from './runtime.js';
+import { getMarkdocTokenizer } from './tokenizer.js';
 
 export async function getContentEntryType({
 	markdocConfigResult,
 	astroConfig,
+	options,
 }: {
 	astroConfig: AstroConfig;
 	markdocConfigResult?: MarkdocConfigResult;
+	options?: MarkdocIntegrationOptions;
 }): Promise<ContentEntryType> {
 	return {
 		extensions: ['.mdoc'],
@@ -27,7 +31,13 @@ export async function getContentEntryType({
 		handlePropagation: true,
 		async getRenderModule({ contents, fileUrl, viteId }) {
 			const entry = getEntryInfo({ contents, fileUrl });
-			const tokens = markdocTokenizer.tokenize(entry.body);
+			const tokenizer = getMarkdocTokenizer(options);
+			let tokens = tokenizer.tokenize(entry.body);
+
+			if (options?.allowHTML) {
+				tokens = htmlTokenTransform(tokenizer, tokens);
+			}
+
 			const ast = Markdoc.parse(tokens);
 			const usedTags = getUsedTags(ast);
 			const userMarkdocConfig = markdocConfigResult?.config ?? {};
@@ -51,7 +61,7 @@ export async function getContentEntryType({
 			}
 
 			const pluginContext = this;
-			const markdocConfig = await setupConfig(userMarkdocConfig);
+			const markdocConfig = await setupConfig(userMarkdocConfig, options);
 
 			const filePath = fileURLToPath(fileUrl);
 
@@ -113,15 +123,18 @@ ${getStringifiedImports(componentConfigByNodeMap, 'Node', astroConfig.root)}
 const tagComponentMap = ${getStringifiedMap(componentConfigByTagMap, 'Tag')};
 const nodeComponentMap = ${getStringifiedMap(componentConfigByNodeMap, 'Node')};
 
+const options = ${JSON.stringify(options)};
+
 const stringifiedAst = ${JSON.stringify(
 				/* Double stringify to encode *as* stringified JSON */ JSON.stringify(ast)
 			)};
 
-export const getHeadings = createGetHeadings(stringifiedAst, markdocConfig);
+export const getHeadings = createGetHeadings(stringifiedAst, markdocConfig, options);
 export const Content = createContentComponent(
 	Renderer,
 	stringifiedAst,
 	markdocConfig,
+  options,
 	tagComponentMap,
 	nodeComponentMap,
 )`;
@@ -133,12 +146,6 @@ export const Content = createContentComponent(
 		),
 	};
 }
-
-const markdocTokenizer = new Markdoc.Tokenizer({
-	// Strip <!-- comments --> from rendered output
-	// Without this, they're rendered as strings!
-	allowComments: true,
-});
 
 function getUsedTags(markdocAst: Node) {
 	const tags = new Set<string>();
@@ -190,8 +197,7 @@ async function emitOptimizedImages(
 				const src = await emitESMImage(
 					resolved.id,
 					ctx.pluginContext.meta.watchMode,
-					ctx.pluginContext.emitFile,
-					{ config: ctx.astroConfig }
+					ctx.pluginContext.emitFile
 				);
 				node.attributes.__optimizedSrc = src;
 			} else {

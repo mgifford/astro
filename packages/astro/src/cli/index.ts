@@ -2,7 +2,6 @@
 import * as colors from 'kleur/colors';
 import yargs from 'yargs-parser';
 import { ASTRO_VERSION } from '../core/constants.js';
-import type { LogOptions } from '../core/logger/core.js';
 
 type CLICommand =
 	| 'help'
@@ -112,16 +111,10 @@ async function runCommand(cmd: string, flags: yargs.Arguments) {
 		}
 	}
 
-	const { enableVerboseLogging, nodeLogDestination } = await import('../core/logger/node.js');
-	const logging: LogOptions = {
-		dest: nodeLogDestination,
-		level: 'info',
-	};
+	// In verbose/debug mode, we log the debug logs asap before any potential errors could appear
 	if (flags.verbose) {
-		logging.level = 'debug';
+		const { enableVerboseLogging } = await import('../core/logger/node.js');
 		enableVerboseLogging();
-	} else if (flags.silent) {
-		logging.level = 'silent';
 	}
 
 	// Start with a default NODE_ENV so Vite doesn't set an incorrect default when loading the Astro config
@@ -135,12 +128,12 @@ async function runCommand(cmd: string, flags: yargs.Arguments) {
 		case 'add': {
 			const { add } = await import('./add/index.js');
 			const packages = flags._.slice(3) as string[];
-			await add(packages, { flags, logging });
+			await add(packages, { flags });
 			return;
 		}
 		case 'dev': {
 			const { dev } = await import('./dev/index.js');
-			const server = await dev({ flags, logging });
+			const server = await dev({ flags });
 			if (server) {
 				return await new Promise(() => {}); // lives forever
 			}
@@ -148,12 +141,12 @@ async function runCommand(cmd: string, flags: yargs.Arguments) {
 		}
 		case 'build': {
 			const { build } = await import('./build/index.js');
-			await build({ flags, logging });
+			await build({ flags });
 			return;
 		}
 		case 'preview': {
 			const { preview } = await import('./preview/index.js');
-			const server = await preview({ flags, logging });
+			const server = await preview({ flags });
 			if (server) {
 				return await server.closed(); // keep alive until the server is closed
 			}
@@ -161,22 +154,16 @@ async function runCommand(cmd: string, flags: yargs.Arguments) {
 		}
 		case 'check': {
 			const { check } = await import('./check/index.js');
-			// We create a server to start doing our operations
-			const checkServer = await check({ flags, logging });
-			if (checkServer) {
-				if (checkServer.isWatchMode) {
-					await checkServer.watch();
-					return await new Promise(() => {}); // lives forever
-				} else {
-					const checkResult = await checkServer.check();
-					return process.exit(checkResult);
-				}
+			const checkServer = await check(flags);
+			if (flags.watch) {
+				return await new Promise(() => {}); // lives forever
+			} else {
+				return process.exit(checkServer ? 1 : 0);
 			}
-			return;
 		}
 		case 'sync': {
 			const { sync } = await import('./sync/index.js');
-			const exitCode = await sync({ flags, logging });
+			const exitCode = await sync({ flags });
 			return process.exit(exitCode);
 		}
 	}

@@ -19,7 +19,8 @@ import type { PageBuildData } from '../core/build/types';
 import type { AstroConfigSchema } from '../core/config';
 import type { AstroTimer } from '../core/config/timer';
 import type { AstroCookies } from '../core/cookies';
-import type { LogOptions } from '../core/logger/core';
+import type { LogOptions, LoggerLevel } from '../core/logger/core';
+import { AstroIntegrationLogger } from '../core/logger/core';
 import type { AstroComponentFactory, AstroComponentInstance } from '../runtime/server';
 import type { SUPPORTED_MARKDOWN_FILE_EXTENSIONS } from './../core/constants.js';
 export type {
@@ -325,7 +326,7 @@ type ServerConfig = {
 	/**
 	 * @name server.port
 	 * @type {number}
-	 * @default `3000`
+	 * @default `4321`
 	 * @description
 	 * Set which port the dev server should listen on.
 	 *
@@ -913,7 +914,7 @@ export interface AstroUserConfig {
 	 * ```js
 	 * {
 	 *   // Example: Use the function syntax to customize based on command
-	 *   server: ({ command }) => ({ port: command === 'dev' ? 3000 : 4000 })
+	 *   server: ({ command }) => ({ port: command === 'dev' ? 4321 : 4000 })
 	 * }
 	 * ```
 	 */
@@ -935,7 +936,7 @@ export interface AstroUserConfig {
 	 * @docs
 	 * @name server.port
 	 * @type {number}
-	 * @default `3000`
+	 * @default `4321`
 	 * @description
 	 * Set which port the server should listen on.
 	 *
@@ -985,7 +986,7 @@ export interface AstroUserConfig {
 		 * @docs
 		 * @name image.service (Experimental)
 		 * @type {{entrypoint: 'astro/assets/services/sharp' | 'astro/assets/services/squoosh' | string, config: Record<string, any>}}
-		 * @default `{entrypoint: 'astro/assets/services/squoosh', config?: {}}`
+		 * @default `{entrypoint: 'astro/assets/services/sharp', config?: {}}`
 		 * @version 2.1.0
 		 * @description
 		 * Set which image service is used for Astro’s experimental assets support.
@@ -1331,6 +1332,16 @@ export interface AstroConfig extends z.output<typeof AstroConfigSchema> {
 	// TypeScript still confirms zod validation matches this type.
 	integrations: AstroIntegration[];
 }
+export interface AstroInlineConfig extends AstroUserConfig, AstroInlineOnlyConfig {}
+export interface AstroInlineOnlyConfig {
+	configFile?: string | false;
+	mode?: RuntimeMode;
+	logLevel?: LoggerLevel;
+	/**
+	 * @internal for testing only
+	 */
+	logging?: LogOptions;
+}
 
 export type ContentEntryModule = {
 	id: string;
@@ -1398,6 +1409,17 @@ export interface DataEntryType {
 }
 
 export type GetDataEntryInfoReturnType = { data: Record<string, unknown>; rawData?: string };
+
+export interface AstroAdapterFeatures {
+	/**
+	 * Creates and edge function that will communiate with the Astro middleware
+	 */
+	edgeMiddleware: boolean;
+	/**
+	 * SSR only. Each route becomes its own function/file.
+	 */
+	functionPerRoute: boolean;
+}
 
 export interface AstroSettings {
 	config: AstroConfig;
@@ -1514,10 +1536,7 @@ export type GetStaticPathsResultKeyed = GetStaticPathsResult & {
  */
 export type GetStaticPaths = (
 	options: GetStaticPathsOptions
-) =>
-	| Promise<GetStaticPathsResult | GetStaticPathsResult[]>
-	| GetStaticPathsResult
-	| GetStaticPathsResult[];
+) => Promise<GetStaticPathsResult> | GetStaticPathsResult;
 
 /**
  * Infers the shape of the `params` property returned by `getStaticPaths()`.
@@ -1660,12 +1679,52 @@ export type PaginateFunction = (data: any[], args?: PaginateOptions) => GetStati
 
 export type Params = Record<string, string | undefined>;
 
+export type SupportsKind = 'unsupported' | 'stable' | 'experimental' | 'deprecated';
+
+export type AstroFeatureMap = {
+	/**
+	 * The adapter is able serve static pages
+	 */
+	staticOutput?: SupportsKind;
+	/**
+	 * The adapter is able to serve pages that are static or rendered via server
+	 */
+	hybridOutput?: SupportsKind;
+	/**
+	 * The adapter is able to serve SSR pages
+	 */
+	serverOutput?: SupportsKind;
+	/**
+	 * The adapter can emit static assets
+	 */
+	assets?: AstroAssetsFeature;
+};
+
+export interface AstroAssetsFeature {
+	supportKind?: SupportsKind;
+	/**
+	 * Whether if this adapter deploys files in an enviroment that is compatible with the library `sharp`
+	 */
+	isSharpCompatible?: boolean;
+	/**
+	 * Whether if this adapter deploys files in an enviroment that is compatible with the library `squoosh`
+	 */
+	isSquooshCompatible?: boolean;
+}
+
 export interface AstroAdapter {
 	name: string;
 	serverEntrypoint?: string;
 	previewEntrypoint?: string;
 	exports?: string[];
 	args?: any;
+	adapterFeatures?: AstroAdapterFeatures;
+	/**
+	 * List of features supported by an adapter.
+	 *
+	 * If the adapter is not able to handle certain configurations, Astro will throw an error.
+	 */
+	supportedAstroFeatures?: AstroFeatureMap;
 }
 
 type Body = string;
@@ -1866,6 +1925,7 @@ export interface AstroIntegration {
 			injectScript: (stage: InjectedScriptStage, content: string) => void;
 			injectRoute: (injectRoute: InjectedRoute) => void;
 			addClientDirective: (directive: ClientDirectiveConfig) => void;
+			logger: AstroIntegrationLogger;
 			// TODO: Add support for `injectElement()` for full HTML element injection, not just scripts.
 			// This may require some refactoring of `scripts`, `styles`, and `links` into something
 			// more generalized. Consider the SSR use-case as well.
@@ -1874,10 +1934,17 @@ export interface AstroIntegration {
 		'astro:config:done'?: (options: {
 			config: AstroConfig;
 			setAdapter: (adapter: AstroAdapter) => void;
+			logger: AstroIntegrationLogger;
 		}) => void | Promise<void>;
-		'astro:server:setup'?: (options: { server: vite.ViteDevServer }) => void | Promise<void>;
-		'astro:server:start'?: (options: { address: AddressInfo }) => void | Promise<void>;
-		'astro:server:done'?: () => void | Promise<void>;
+		'astro:server:setup'?: (options: {
+			server: vite.ViteDevServer;
+			logger: AstroIntegrationLogger;
+		}) => void | Promise<void>;
+		'astro:server:start'?: (options: {
+			address: AddressInfo;
+			logger: AstroIntegrationLogger;
+		}) => void | Promise<void>;
+		'astro:server:done'?: (options: { logger: AstroIntegrationLogger }) => void | Promise<void>;
 		'astro:build:ssr'?: (options: {
 			manifest: SerializedSSRManifest;
 			/**
@@ -1889,19 +1956,25 @@ export interface AstroIntegration {
 			 * File path of the emitted middleware
 			 */
 			middlewareEntryPoint: URL | undefined;
+			logger: AstroIntegrationLogger;
 		}) => void | Promise<void>;
-		'astro:build:start'?: () => void | Promise<void>;
+		'astro:build:start'?: (options: { logger: AstroIntegrationLogger }) => void | Promise<void>;
 		'astro:build:setup'?: (options: {
 			vite: vite.InlineConfig;
 			pages: Map<string, PageBuildData>;
 			target: 'client' | 'server';
 			updateConfig: (newConfig: vite.InlineConfig) => void;
+			logger: AstroIntegrationLogger;
 		}) => void | Promise<void>;
-		'astro:build:generated'?: (options: { dir: URL }) => void | Promise<void>;
+		'astro:build:generated'?: (options: {
+			dir: URL;
+			logger: AstroIntegrationLogger;
+		}) => void | Promise<void>;
 		'astro:build:done'?: (options: {
 			pages: { pathname: string }[];
 			dir: URL;
 			routes: RouteData[];
+			logger: AstroIntegrationLogger;
 		}) => void | Promise<void>;
 	};
 }
@@ -1962,9 +2035,10 @@ export type RedirectRouteData = RouteData & {
 	redirect: string;
 };
 
-export type SerializedRouteData = Omit<RouteData, 'generate' | 'pattern'> & {
+export type SerializedRouteData = Omit<RouteData, 'generate' | 'pattern' | 'redirectRoute'> & {
 	generate: undefined;
 	pattern: string;
+	redirectRoute: SerializedRouteData | undefined;
 	_meta: {
 		trailingSlash: AstroConfig['trailingSlash'];
 	};

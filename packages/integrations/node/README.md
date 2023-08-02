@@ -159,7 +159,7 @@ For standalone mode the server handles file servering in addition to the page an
 You can override the host and port the standalone server runs on by passing them as environment variables at runtime:
 
 ```shell
-HOST=0.0.0.0 PORT=3000 node ./dist/server/entry.mjs
+HOST=0.0.0.0 PORT=4321 node ./dist/server/entry.mjs
 ```
 
 #### HTTPS
@@ -188,7 +188,7 @@ export $(cat .env.runtime) && astro build
 
 ### SyntaxError: Named export 'compile' not found
 
-You may see this when running the entry script if it was built with npm or Yarn. This is a [known issue](https://github.com/withastro/astro/issues/4974) that will be fixed in a future release. As a workaround, add `"path-to-regexp"` to the `noExternal` array:
+You may see this when running the entry script if it was built with npm or Yarn. This is a known issue that may be fixed in a future release. As a workaround, add `"path-to-regexp"` to the `noExternal` array:
 
 ```js ins={9-13}
 // astro.config.mjs

@@ -89,6 +89,16 @@ export function getAdapter(args?: Options): AstroAdapter {
 		serverEntrypoint: '@astrojs/deno/server.js',
 		args: args ?? {},
 		exports: ['stop', 'handle', 'start', 'running'],
+		supportedAstroFeatures: {
+			hybridOutput: 'stable',
+			staticOutput: 'stable',
+			serverOutput: 'stable',
+			assets: {
+				supportKind: 'stable',
+				isSharpCompatible: false,
+				isSquooshCompatible: false,
+			},
+		},
 	};
 }
 
@@ -168,7 +178,7 @@ export default function createIntegration(args?: Options): AstroIntegration {
 				const pth = fileURLToPath(entryUrl);
 
 				await esbuild.build({
-					target: 'es2020',
+					target: 'esnext',
 					platform: 'browser',
 					entryPoints: [pth],
 					outfile: pth,

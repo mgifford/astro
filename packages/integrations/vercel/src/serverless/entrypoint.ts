@@ -1,14 +1,12 @@
-import { polyfill } from '@astrojs/webapi';
 import type { SSRManifest } from 'astro';
 import { App } from 'astro/app';
+import { applyPolyfills } from 'astro/app/node';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 
 import { ASTRO_LOCALS_HEADER } from './adapter';
 import { getRequest, setResponse } from './request-transform';
 
-polyfill(globalThis, {
-	exclude: 'window document',
-});
+applyPolyfills();
 
 export const createExports = (manifest: SSRManifest) => {
 	const app = new App(manifest);
@@ -23,12 +21,7 @@ export const createExports = (manifest: SSRManifest) => {
 			return res.end(err.reason || 'Invalid request body');
 		}
 
-		let routeData = app.match(request, { matchNotFound: true });
-		if (!routeData) {
-			res.statusCode = 404;
-			return res.end('Not found');
-		}
-
+		let routeData = app.match(request);
 		let locals = {};
 		if (request.headers.has(ASTRO_LOCALS_HEADER)) {
 			let localsAsString = request.headers.get(ASTRO_LOCALS_HEADER);
