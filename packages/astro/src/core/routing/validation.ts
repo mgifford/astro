@@ -1,5 +1,12 @@
 import type { ComponentInstance, GetStaticPathsResult, RouteData } from '../../@types/astro';
-import { AstroError, AstroErrorData } from '../errors/index.js';
+import {
+	AstroError,
+	GetStaticPathsExpectedParams,
+	GetStaticPathsInvalidRouteParam,
+	GetStaticPathsRequired,
+	InvalidGetStaticPathsEntry,
+	InvalidGetStaticPathsReturn,
+} from '../errors/index.js';
 import type { LogOptions } from '../logger/core';
 import { warn } from '../logger/core.js';
 
@@ -9,8 +16,8 @@ const VALID_PARAM_TYPES = ['string', 'number', 'undefined'];
 export function validateGetStaticPathsParameter([key, value]: [string, any], route: string) {
 	if (!VALID_PARAM_TYPES.includes(typeof value)) {
 		throw new AstroError({
-			...AstroErrorData.GetStaticPathsInvalidRouteParam,
-			message: AstroErrorData.GetStaticPathsInvalidRouteParam.message(key, value, typeof value),
+			...GetStaticPathsInvalidRouteParam,
+			message: GetStaticPathsInvalidRouteParam.message(key, value, typeof value),
 			location: {
 				file: route,
 			},
@@ -31,7 +38,7 @@ export function validateDynamicRouteModule(
 ) {
 	if ((!ssr || route.prerender) && !mod.getStaticPaths) {
 		throw new AstroError({
-			...AstroErrorData.GetStaticPathsRequired,
+			...GetStaticPathsRequired,
 			location: { file: route.component },
 		});
 	}
@@ -45,8 +52,8 @@ export function validateGetStaticPathsResult(
 ) {
 	if (!Array.isArray(result)) {
 		throw new AstroError({
-			...AstroErrorData.InvalidGetStaticPathsReturn,
-			message: AstroErrorData.InvalidGetStaticPathsReturn.message(typeof result),
+			...InvalidGetStaticPathsReturn,
+			message: InvalidGetStaticPathsReturn.message(typeof result),
 			location: {
 				file: route.component,
 			},
@@ -56,8 +63,8 @@ export function validateGetStaticPathsResult(
 	result.forEach((pathObject) => {
 		if ((typeof pathObject === 'object' && Array.isArray(pathObject)) || pathObject === null) {
 			throw new AstroError({
-				...AstroErrorData.InvalidGetStaticPathsEntry,
-				message: AstroErrorData.InvalidGetStaticPathsEntry.message(
+				...InvalidGetStaticPathsEntry,
+				message: InvalidGetStaticPathsEntry.message(
 					Array.isArray(pathObject) ? 'array' : typeof pathObject
 				),
 			});
@@ -69,7 +76,7 @@ export function validateGetStaticPathsResult(
 			(pathObject.params && Object.keys(pathObject.params).length === 0)
 		) {
 			throw new AstroError({
-				...AstroErrorData.GetStaticPathsExpectedParams,
+				...GetStaticPathsExpectedParams,
 				location: {
 					file: route.component,
 				},

@@ -1,5 +1,5 @@
 import type { AstroSettings } from '../@types/astro.js';
-import { AstroError, AstroErrorData } from '../core/errors/index.js';
+import { AstroError, ExpectedImageOptions, InvalidImageService } from '../core/errors/index.js';
 import { isLocalService, type ImageService } from './services/service.js';
 import type { GetImageResult, ImageMetadata, ImageTransform } from './types.js';
 
@@ -23,7 +23,7 @@ export async function getConfiguredImageService(): Promise<ImageService> {
 			// @ts-expect-error
 			'virtual:image-service'
 		).catch((e) => {
-			const error = new AstroError(AstroErrorData.InvalidImageService);
+			const error = new AstroError(InvalidImageService);
 			(error as any).cause = e;
 			throw error;
 		});
@@ -42,8 +42,8 @@ export async function getImage(
 ): Promise<GetImageResult> {
 	if (!options || typeof options !== 'object') {
 		throw new AstroError({
-			...AstroErrorData.ExpectedImageOptions,
-			message: AstroErrorData.ExpectedImageOptions.message(JSON.stringify(options)),
+			...ExpectedImageOptions,
+			message: ExpectedImageOptions.message(JSON.stringify(options)),
 		});
 	}
 

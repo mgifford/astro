@@ -10,12 +10,13 @@ import { fileURLToPath } from 'node:url';
 import type { Plugin } from 'vite';
 import { normalizePath } from 'vite';
 import type { AstroSettings } from '../@types/astro';
-import { AstroError, AstroErrorData, MarkdownError } from '../core/errors/index.js';
+import { AstroError, MarkdownError } from '../core/errors/index.js';
 import type { LogOptions } from '../core/logger/core.js';
 import { warn } from '../core/logger/core.js';
 import { isMarkdownFile, rootRelativePath } from '../core/util.js';
 import type { PluginMetadata } from '../vite-plugin-astro/types.js';
 import { escapeViteEnvReferences, getFileInfo } from '../vite-plugin-utils/index.js';
+import { InvalidFrontmatterInjectionError } from '../core/errors/errors-data.js';
 
 interface AstroPluginOptions {
 	settings: AstroSettings;
@@ -27,6 +28,7 @@ function safeMatter(source: string, id: string) {
 		return matter(source);
 	} catch (err: any) {
 		const markdownError = new MarkdownError({
+			name: 'MarkdownError',
 			message: err.message,
 			stack: err.stack,
 			location: {
@@ -99,7 +101,7 @@ export default function markdown({ settings, logging }: AstroPluginOptions): Plu
 
 				const astroData = safelyGetAstroData(renderResult.vfile.data);
 				if (astroData instanceof InvalidAstroDataError) {
-					throw new AstroError(AstroErrorData.InvalidFrontmatterInjectionError);
+					throw new AstroError(InvalidFrontmatterInjectionError);
 				}
 
 				const { frontmatter } = astroData;
@@ -116,7 +118,7 @@ export default function markdown({ settings, logging }: AstroPluginOptions): Plu
 				const code = escapeViteEnvReferences(`
 				import { Fragment, jsx as h } from ${JSON.stringify(astroJsxRuntimeModulePath)};
 				import { spreadAttributes } from ${JSON.stringify(astroServerRuntimeModulePath)};
-				import { AstroError, AstroErrorData } from ${JSON.stringify(astroErrorModulePath)};
+				import { AstroError, MarkdownImageNotFound } from ${JSON.stringify(astroErrorModulePath)};
 
 				${layout ? `import Layout from ${JSON.stringify(layout)};` : ''}
 				${settings.config.experimental.assets ? 'import { getImage } from "astro:assets";' : ''}
@@ -133,8 +135,8 @@ export default function markdown({ settings, logging }: AstroPluginOptions): Plu
 				async function getImageSafely(imageSrc, imagePath, resolvedImagePath) {
 					if (!imageSrc) {
 						throw new AstroError({
-							...AstroErrorData.MarkdownImageNotFound,
-							message: AstroErrorData.MarkdownImageNotFound.message(
+							...MarkdownImageNotFound,
+							message: MarkdownImageNotFound.message(
 								imagePath,
 								resolvedImagePath
 							),

@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url';
 import { ZodError } from 'zod';
 import { eventConfigError, telemetry } from '../../events/index.js';
 import { trackAstroConfigZodError } from '../errors/errors.js';
-import { AstroError, AstroErrorData } from '../errors/index.js';
+import { AstroError, ConfigLegacyKey, ConfigNotFound } from '../errors/index.js';
 import { formatConfigErrorMessage } from '../messages.js';
 import { mergeConfig } from './merge.js';
 import { createRelativeSchema } from './schema.js';
@@ -81,8 +81,8 @@ export async function validateConfig(
 	}
 	if (legacyConfigKey) {
 		throw new AstroError({
-			...AstroErrorData.ConfigLegacyKey,
-			message: AstroErrorData.ConfigLegacyKey.message(legacyConfigKey),
+			...ConfigLegacyKey,
+			message: ConfigLegacyKey.message(legacyConfigKey),
 		});
 	}
 	/* eslint-enable no-console */
@@ -170,8 +170,8 @@ export async function resolveConfigPath(
 		userConfigPath = path.join(options.root, options.configFile);
 		if (!options.fs.existsSync(userConfigPath)) {
 			throw new AstroError({
-				...AstroErrorData.ConfigNotFound,
-				message: AstroErrorData.ConfigNotFound.message(options.configFile),
+				...ConfigNotFound,
+				message: ConfigNotFound.message(options.configFile),
 			});
 		}
 	} else {

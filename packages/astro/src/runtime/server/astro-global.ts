@@ -1,21 +1,21 @@
 import type { AstroGlobalPartial } from '../../@types/astro';
 import { ASTRO_VERSION } from '../../core/constants.js';
-import { AstroError, AstroErrorData } from '../../core/errors/index.js';
+import { AstroError, AstroGlobNoMatch, AstroGlobUsedOutside } from '../../core/errors/index.js';
 
 /** Create the Astro.glob() runtime function. */
 function createAstroGlobFn() {
 	const globHandler = (importMetaGlobResult: Record<string, any>) => {
 		if (typeof importMetaGlobResult === 'string') {
 			throw new AstroError({
-				...AstroErrorData.AstroGlobUsedOutside,
-				message: AstroErrorData.AstroGlobUsedOutside.message(JSON.stringify(importMetaGlobResult)),
+				...AstroGlobUsedOutside,
+				message: AstroGlobUsedOutside.message(JSON.stringify(importMetaGlobResult)),
 			});
 		}
 		let allEntries = [...Object.values(importMetaGlobResult)];
 		if (allEntries.length === 0) {
 			throw new AstroError({
-				...AstroErrorData.AstroGlobNoMatch,
-				message: AstroErrorData.AstroGlobNoMatch.message(JSON.stringify(importMetaGlobResult)),
+				...AstroGlobNoMatch,
+				message: AstroGlobNoMatch.message(JSON.stringify(importMetaGlobResult)),
 			});
 		}
 		// Map over the `import()` promises, calling to load them.

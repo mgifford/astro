@@ -5,7 +5,10 @@ import * as path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { normalizePath, type ViteDevServer } from 'vite';
 import type { AstroSettings, ContentEntryType } from '../@types/astro.js';
-import { AstroErrorData } from '../core/errors/errors-data.js';
+import {
+	ContentCollectionTypeMismatchError,
+	MixedContentDataCollectionError,
+} from '../core/errors/errors-data.js';
 import { AstroError } from '../core/errors/errors.js';
 import { info, warn, type LogOptions } from '../core/logger/core.js';
 import { isRelativePath } from '../core/path.js';
@@ -215,8 +218,8 @@ export async function createContentTypesGenerator({
 						viteServer.ws.send({
 							type: 'error',
 							err: new AstroError({
-								...AstroErrorData.MixedContentDataCollectionError,
-								message: AstroErrorData.MixedContentDataCollectionError.message(collectionKey),
+								...MixedContentDataCollectionError,
+								message: MixedContentDataCollectionError.message(collectionKey),
 								location: { file: entry.pathname },
 							}) as any,
 						});
@@ -255,8 +258,8 @@ export async function createContentTypesGenerator({
 			viteServer.ws.send({
 				type: 'error',
 				err: new AstroError({
-					...AstroErrorData.MixedContentDataCollectionError,
-					message: AstroErrorData.MixedContentDataCollectionError.message(collectionKey),
+					...MixedContentDataCollectionError,
+					message: MixedContentDataCollectionError.message(collectionKey),
 					location: { file: entry.pathname },
 				}) as any,
 			});
@@ -422,8 +425,8 @@ async function writeContentFiles({
 			viteServer.ws.send({
 				type: 'error',
 				err: new AstroError({
-					...AstroErrorData.ContentCollectionTypeMismatchError,
-					message: AstroErrorData.ContentCollectionTypeMismatchError.message(
+					...ContentCollectionTypeMismatchError,
+					message: ContentCollectionTypeMismatchError.message(
 						collectionKey,
 						collection.type,
 						collectionConfig.type

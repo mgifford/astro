@@ -18,7 +18,7 @@ import { isModeServerWithNoAdapter } from '../../core/util.js';
 import { runHookBuildSetup } from '../../integrations/index.js';
 import { isServerLikeOutput } from '../../prerender/utils.js';
 import { PAGE_SCRIPT_ID } from '../../vite-plugin-scripts/index.js';
-import { AstroError, AstroErrorData } from '../errors/index.js';
+import { AstroError, NoAdapterInstalled } from '../errors/index.js';
 import { info } from '../logger/core.js';
 import { routeIsRedirect } from '../redirects/index.js';
 import { getOutDirWithinCwd } from './common.js';
@@ -38,7 +38,7 @@ export async function viteBuild(opts: StaticBuildOptions) {
 
 	// Make sure we have an adapter before building
 	if (isModeServerWithNoAdapter(opts.settings)) {
-		throw new AstroError(AstroErrorData.NoAdapterInstalled);
+		throw new AstroError(NoAdapterInstalled);
 	}
 
 	settings.timer.start('SSR build');

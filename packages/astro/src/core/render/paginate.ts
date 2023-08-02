@@ -6,7 +6,7 @@ import type {
 	Props,
 	RouteData,
 } from '../../@types/astro';
-import { AstroError, AstroErrorData } from '../errors/index.js';
+import { AstroError, PageNumberParamNotFound } from '../errors/index.js';
 
 export function generatePaginateFunction(routeMatch: RouteData): PaginateFunction {
 	return function paginateUtility(
@@ -25,8 +25,8 @@ export function generatePaginateFunction(routeMatch: RouteData): PaginateFunctio
 			includesFirstPageNumber = true;
 		} else {
 			throw new AstroError({
-				...AstroErrorData.PageNumberParamNotFound,
-				message: AstroErrorData.PageNumberParamNotFound.message(paramName),
+				...PageNumberParamNotFound,
+				message: PageNumberParamNotFound.message(paramName),
 			});
 		}
 		const lastPage = Math.max(1, Math.ceil(data.length / pageSize));

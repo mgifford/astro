@@ -6,7 +6,12 @@ import type {
 } from '../../../@types/astro';
 import type { RenderInstruction } from './types.js';
 
-import { AstroError, AstroErrorData } from '../../../core/errors/index.js';
+import {
+	AstroError,
+	NoClientEntrypoint,
+	NoClientOnlyHint,
+	NoMatchingRenderer,
+} from '../../../core/errors/index.js';
 import { HTMLBytes, markHTMLString } from '../escape.js';
 import { extractDirectives, generateHydrateScript } from '../hydration.js';
 import { serializeProps } from '../serialize.js';
@@ -186,9 +191,9 @@ async function renderFrameworkComponent(
 	if (!renderer) {
 		if (metadata.hydrate === 'only') {
 			throw new AstroError({
-				...AstroErrorData.NoClientOnlyHint,
-				message: AstroErrorData.NoClientOnlyHint.message(metadata.displayName),
-				hint: AstroErrorData.NoClientOnlyHint.hint(
+				...NoClientOnlyHint,
+				message: NoClientOnlyHint.message(metadata.displayName),
+				hint: NoClientOnlyHint.hint(
 					probableRendererNames.map((r) => r.replace('@astrojs/', '')).join('|')
 				),
 			});
@@ -199,14 +204,14 @@ async function renderFrameworkComponent(
 			const plural = validRenderers.length > 1;
 			if (matchingRenderers.length === 0) {
 				throw new AstroError({
-					...AstroErrorData.NoMatchingRenderer,
-					message: AstroErrorData.NoMatchingRenderer.message(
+					...NoMatchingRenderer,
+					message: NoMatchingRenderer.message(
 						metadata.displayName,
 						metadata?.componentUrl?.split('.').pop(),
 						plural,
 						validRenderers.length
 					),
-					hint: AstroErrorData.NoMatchingRenderer.hint(
+					hint: NoMatchingRenderer.hint(
 						formatList(probableRendererNames.map((r) => '`' + r + '`'))
 					),
 				});
@@ -258,12 +263,8 @@ If you're still stuck, please open an issue on GitHub or join us at https://astr
 		metadata.hydrate
 	) {
 		throw new AstroError({
-			...AstroErrorData.NoClientEntrypoint,
-			message: AstroErrorData.NoClientEntrypoint.message(
-				displayName,
-				metadata.hydrate,
-				renderer.name
-			),
+			...NoClientEntrypoint,
+			message: NoClientEntrypoint.message(displayName, metadata.hydrate, renderer.name),
 		});
 	}
 

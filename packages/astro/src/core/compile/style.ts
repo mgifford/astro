@@ -1,7 +1,7 @@
 import type { TransformOptions } from '@astrojs/compiler';
 import fs from 'node:fs';
 import { preprocessCSS, type ResolvedConfig } from 'vite';
-import { AstroErrorData, CSSError, positionAt } from '../errors/index.js';
+import { CSSError, CSSSyntaxError, positionAt, UnknownCSSError } from '../errors/index.js';
 
 export function createStylePreprocessor({
 	filename,
@@ -55,7 +55,7 @@ function enhanceCSSError(err: any, filename: string, cssContent: string) {
 		// Vite will handle creating the frame for us with proper line numbers, no need to create one
 
 		return new CSSError({
-			...AstroErrorData.CSSSyntaxError,
+			...CSSSyntaxError,
 			message: err.reason,
 			location: {
 				file: filename,
@@ -71,7 +71,7 @@ function enhanceCSSError(err: any, filename: string, cssContent: string) {
 		const errorLine = positionAt(styleTagBeginning, fileContent).line + (err.line ?? 0);
 
 		return new CSSError({
-			...AstroErrorData.UnknownCSSError,
+			...UnknownCSSError,
 			message: err.message,
 			location: {
 				file: filename,
@@ -88,6 +88,7 @@ function enhanceCSSError(err: any, filename: string, cssContent: string) {
 	errorPosition.line += 1;
 
 	return new CSSError({
+		name: 'CSSError',
 		message: err.message,
 		location: {
 			file: filename,

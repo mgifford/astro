@@ -1,5 +1,9 @@
 import type { RouteData, SSRResult } from '../../../../@types/astro';
-import { AstroError, AstroErrorData } from '../../../../core/errors/index.js';
+import {
+	AstroError,
+	OnlyResponseCanBeReturned,
+	ResponseSentError,
+} from '../../../../core/errors/index.js';
 import { chunkToByteArray, chunkToString, encoder, type RenderDestination } from '../common.js';
 import type { AstroComponentFactory } from './factory.js';
 import { isHeadAndContent } from './head-and-content.js';
@@ -95,7 +99,7 @@ export async function renderToReadableStream(
 					// whether headers can still be modified. In that case, throw an error
 					if (chunk instanceof Response) {
 						throw new AstroError({
-							...AstroErrorData.ResponseSentError,
+							...ResponseSentError,
 						});
 					}
 
@@ -138,8 +142,8 @@ async function callComponentAsTemplateResultOrResponse(
 		return factoryResult;
 	} else if (!isRenderTemplateResult(factoryResult)) {
 		throw new AstroError({
-			...AstroErrorData.OnlyResponseCanBeReturned,
-			message: AstroErrorData.OnlyResponseCanBeReturned.message(route?.route, typeof factoryResult),
+			...OnlyResponseCanBeReturned,
+			message: OnlyResponseCanBeReturned.message(route?.route, typeof factoryResult),
 			location: {
 				file: route?.component,
 			},

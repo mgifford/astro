@@ -9,7 +9,7 @@ import type {
 	SSRManifest,
 } from '../@types/astro';
 import { attachToResponse } from '../core/cookies/index.js';
-import { AstroErrorData, isAstroError } from '../core/errors/index.js';
+import { isAstroError, NoMatchingStaticPathFound } from '../core/errors/index.js';
 import { warn } from '../core/logger/core.js';
 import { loadMiddleware } from '../core/middleware/loadMiddleware.js';
 import { isEndpointResult } from '../core/render/core.js';
@@ -84,7 +84,7 @@ export async function matchRoute(
 			};
 		} catch (e) {
 			// Ignore error for no matching static paths
-			if (isAstroError(e) && e.title === AstroErrorData.NoMatchingStaticPathFound.title) {
+			if (isAstroError(e) && e.title === NoMatchingStaticPathFound.title) {
 				continue;
 			}
 			throw e;
@@ -105,9 +105,9 @@ export async function matchRoute(
 		warn(
 			logging,
 			'getStaticPaths',
-			`${AstroErrorData.NoMatchingStaticPathFound.message(
-				pathname
-			)}\n\n${AstroErrorData.NoMatchingStaticPathFound.hint(possibleRoutes)}`
+			`${NoMatchingStaticPathFound.message(pathname)}\n\n${NoMatchingStaticPathFound.hint(
+				possibleRoutes
+			)}`
 		);
 	}
 

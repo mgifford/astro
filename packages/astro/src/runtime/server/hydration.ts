@@ -4,7 +4,7 @@ import type {
 	SSRLoadedRenderer,
 	SSRResult,
 } from '../../@types/astro';
-import { AstroError, AstroErrorData } from '../../core/errors/index.js';
+import { AstroError, MissingMediaQueryDirective } from '../../core/errors/index.js';
 import { escapeHTML } from './escape.js';
 import { serializeProps } from './serialize.js';
 import { serializeListValue } from './util.js';
@@ -84,7 +84,7 @@ export function extractDirectives(
 						extracted.hydration.directive === 'media' &&
 						typeof extracted.hydration.value !== 'string'
 					) {
-						throw new AstroError(AstroErrorData.MissingMediaQueryDirective);
+						throw new AstroError(MissingMediaQueryDirective);
 					}
 
 					break;

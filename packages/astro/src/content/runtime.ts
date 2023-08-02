@@ -1,6 +1,10 @@
 import type { MarkdownHeading } from '@astrojs/markdown-remark';
 import { ZodIssueCode, string as zodString } from 'zod';
-import { AstroError, AstroErrorData } from '../core/errors/index.js';
+import {
+	AstroError,
+	CollectionDoesNotExistError,
+	UnknownContentCollectionError,
+} from '../core/errors/index.js';
 import { prependForwardSlash } from '../core/path.js';
 import {
 	createComponent,
@@ -56,8 +60,8 @@ export function createGetCollection({
 			type = 'data';
 		} else {
 			throw new AstroError({
-				...AstroErrorData.CollectionDoesNotExistError,
-				message: AstroErrorData.CollectionDoesNotExistError.message(collection),
+				...CollectionDoesNotExistError,
+				message: CollectionDoesNotExistError.message(collection),
 			});
 		}
 		const lazyImports = Object.values(
@@ -193,7 +197,7 @@ export function createGetEntry({
 			collection = collectionOrLookupObject;
 			if (!_lookupId)
 				throw new AstroError({
-					...AstroErrorData.UnknownContentCollectionError,
+					...UnknownContentCollectionError,
 					message: '`getEntry()` requires an entry identifier as the second argument.',
 				});
 			lookupId = _lookupId;
@@ -261,7 +265,7 @@ async function render({
 	renderEntryImport?: LazyImport;
 }): Promise<RenderResult> {
 	const UnexpectedRenderError = new AstroError({
-		...AstroErrorData.UnknownContentCollectionError,
+		...UnknownContentCollectionError,
 		message: `Unexpected error while rendering ${String(collection)} → ${String(id)}.`,
 	});
 

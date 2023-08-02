@@ -10,7 +10,12 @@ import type { Environment, RenderContext } from '../render/index';
 import { renderEndpoint } from '../../runtime/server/index.js';
 import { ASTRO_VERSION } from '../constants.js';
 import { AstroCookies, attachToResponse } from '../cookies/index.js';
-import { AstroError, AstroErrorData } from '../errors/index.js';
+import {
+	AstroError,
+	ClientAddressNotAvailable,
+	LocalsNotAnObject,
+	StaticClientAddressNotAvailable,
+} from '../errors/index.js';
 import { warn } from '../logger/core.js';
 import { callMiddleware } from '../middleware/callMiddleware.js';
 
@@ -69,11 +74,11 @@ export function createAPIContext({
 			if (!(clientAddressSymbol in request)) {
 				if (adapterName) {
 					throw new AstroError({
-						...AstroErrorData.ClientAddressNotAvailable,
-						message: AstroErrorData.ClientAddressNotAvailable.message(adapterName),
+						...ClientAddressNotAvailable,
+						message: ClientAddressNotAvailable.message(adapterName),
 					});
 				} else {
-					throw new AstroError(AstroErrorData.StaticClientAddressNotAvailable);
+					throw new AstroError(StaticClientAddressNotAvailable);
 				}
 			}
 
@@ -89,7 +94,7 @@ export function createAPIContext({
 		},
 		set(val) {
 			if (typeof val !== 'object') {
-				throw new AstroError(AstroErrorData.LocalsNotAnObject);
+				throw new AstroError(LocalsNotAnObject);
 			} else {
 				Reflect.set(request, clientLocalsSymbol, val);
 			}

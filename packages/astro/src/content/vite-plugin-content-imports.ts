@@ -12,7 +12,10 @@ import type {
 	DataEntryModule,
 	DataEntryType,
 } from '../@types/astro.js';
-import { AstroErrorData } from '../core/errors/errors-data.js';
+import {
+	UnknownContentCollectionError,
+	UnsupportedConfigTransformError,
+} from '../core/errors/errors-data.js';
 import { AstroError } from '../core/errors/errors.js';
 import { escapeViteEnvReferences } from '../vite-plugin-utils/index.js';
 import { CONTENT_FLAG, DATA_FLAG } from './consts.js';
@@ -285,7 +288,7 @@ async function getEntryModuleBaseInfo<TEntryType extends ContentEntryType | Data
 		rawContents = await fs.promises.readFile(fileId, 'utf-8');
 	} catch (e) {
 		throw new AstroError({
-			...AstroErrorData.UnknownContentCollectionError,
+			...UnknownContentCollectionError,
 			message: `Unexpected error reading entry ${JSON.stringify(fileId)}.`,
 			stack: e instanceof Error ? e.stack : undefined,
 		});
@@ -295,7 +298,7 @@ async function getEntryModuleBaseInfo<TEntryType extends ContentEntryType | Data
 
 	if (!entryConfig) {
 		throw new AstroError({
-			...AstroErrorData.UnknownContentCollectionError,
+			...UnknownContentCollectionError,
 			message: `No parser found for data entry ${JSON.stringify(
 				fileId
 			)}. Did you apply an integration for this file type?`,
@@ -303,7 +306,7 @@ async function getEntryModuleBaseInfo<TEntryType extends ContentEntryType | Data
 	}
 	const entry = pathToFileURL(fileId);
 	const collection = getEntryCollectionName({ entry, contentDir });
-	if (collection === undefined) throw new AstroError(AstroErrorData.UnknownContentCollectionError);
+	if (collection === undefined) throw new AstroError(UnknownContentCollectionError);
 
 	const collectionConfig = contentConfig?.collections[collection];
 
@@ -322,7 +325,7 @@ async function getContentConfigFromGlobal() {
 	// Content config should be loaded before being accessed from Vite plugins
 	if (observable.status === 'init') {
 		throw new AstroError({
-			...AstroErrorData.UnknownContentCollectionError,
+			...UnknownContentCollectionError,
 			message: 'Content config failed to load.',
 		});
 	}
@@ -365,12 +368,13 @@ function stringifyEntryData(data: Record<string, any>): string {
 	} catch (e) {
 		if (e instanceof Error) {
 			throw new AstroError({
-				...AstroErrorData.UnsupportedConfigTransformError,
-				message: AstroErrorData.UnsupportedConfigTransformError.message(e.message),
+				...UnsupportedConfigTransformError,
+				message: UnsupportedConfigTransformError.message(e.message),
 				stack: e.stack,
 			});
 		} else {
 			throw new AstroError({
+				name: 'ContentImportsError',
 				message: 'Unexpected error processing content collection data.',
 			});
 		}

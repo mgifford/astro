@@ -1,4 +1,10 @@
-import { AstroError, AstroErrorData } from '../../core/errors/index.js';
+import {
+	AstroError,
+	ExpectedImage,
+	LocalImageUsedWrongly,
+	MissingImageDimension,
+	UnsupportedImageFormat,
+} from '../../core/errors/index.js';
 import { joinPaths } from '../../core/path.js';
 import { VALID_SUPPORTED_FORMATS } from '../consts.js';
 import { isESMImportedImage } from '../internal.js';
@@ -118,8 +124,8 @@ export const baseService: Omit<LocalImageService, 'transform'> = {
 		// `src` is missing or is `undefined`.
 		if (!options.src || (typeof options.src !== 'string' && typeof options.src !== 'object')) {
 			throw new AstroError({
-				...AstroErrorData.ExpectedImage,
-				message: AstroErrorData.ExpectedImage.message(JSON.stringify(options.src)),
+				...ExpectedImage,
+				message: ExpectedImage.message(JSON.stringify(options.src)),
 			});
 		}
 
@@ -127,8 +133,8 @@ export const baseService: Omit<LocalImageService, 'transform'> = {
 			// User passed an `/@fs/` path instead of the full image.
 			if (options.src.startsWith('/@fs/')) {
 				throw new AstroError({
-					...AstroErrorData.LocalImageUsedWrongly,
-					message: AstroErrorData.LocalImageUsedWrongly.message(options.src),
+					...LocalImageUsedWrongly,
+					message: LocalImageUsedWrongly.message(options.src),
 				});
 			}
 
@@ -144,15 +150,15 @@ export const baseService: Omit<LocalImageService, 'transform'> = {
 
 			if (missingDimension) {
 				throw new AstroError({
-					...AstroErrorData.MissingImageDimension,
-					message: AstroErrorData.MissingImageDimension.message(missingDimension, options.src),
+					...MissingImageDimension,
+					message: MissingImageDimension.message(missingDimension, options.src),
 				});
 			}
 		} else {
 			if (!VALID_SUPPORTED_FORMATS.includes(options.src.format as any)) {
 				throw new AstroError({
-					...AstroErrorData.UnsupportedImageFormat,
-					message: AstroErrorData.UnsupportedImageFormat.message(
+					...UnsupportedImageFormat,
+					message: UnsupportedImageFormat.message(
 						options.src.format,
 						options.src.src,
 						VALID_SUPPORTED_FORMATS

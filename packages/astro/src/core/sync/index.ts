@@ -15,7 +15,12 @@ import { resolveConfig } from '../config/config.js';
 import { createNodeLogging } from '../config/logging.js';
 import { createSettings } from '../config/settings.js';
 import { createVite } from '../create-vite.js';
-import { AstroError, AstroErrorData, createSafeError, isAstroError } from '../errors/index.js';
+import {
+	AstroError,
+	createSafeError,
+	GenerateContentTypesError,
+	isAstroError,
+} from '../errors/index.js';
 import { info, type LogOptions } from '../logger/core.js';
 
 export type ProcessExit = 0 | 1;
@@ -123,8 +128,8 @@ export async function syncInternal(
 		}
 		throw new AstroError(
 			{
-				...AstroErrorData.GenerateContentTypesError,
-				message: AstroErrorData.GenerateContentTypesError.message(safeError.message),
+				...GenerateContentTypesError,
+				message: GenerateContentTypesError.message(safeError.message),
 			},
 			{ cause: e }
 		);

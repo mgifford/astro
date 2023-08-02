@@ -7,7 +7,7 @@ import type {
 	RouteData,
 	RuntimeMode,
 } from '../../@types/astro';
-import { AstroError, AstroErrorData } from '../errors/index.js';
+import { AstroError, GetStaticPathsRemovedRSSHelper } from '../errors/index.js';
 import { debug, warn, type LogOptions } from '../logger/core.js';
 
 import { stringifyParams } from '../routing/params.js';
@@ -52,7 +52,7 @@ export async function callGetStaticPaths({
 	staticPaths = await mod.getStaticPaths({
 		paginate: generatePaginateFunction(route),
 		rss() {
-			throw new AstroError(AstroErrorData.GetStaticPathsRemovedRSSHelper);
+			throw new AstroError(GetStaticPathsRemovedRSSHelper);
 		},
 	});
 

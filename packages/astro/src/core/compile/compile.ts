@@ -6,9 +6,10 @@ import { transform } from '@astrojs/compiler';
 import { fileURLToPath } from 'node:url';
 import { normalizePath } from 'vite';
 import { AggregateError, AstroError, CompilerError } from '../errors/errors.js';
-import { AstroErrorData } from '../errors/index.js';
+import {} from '../errors/index.js';
 import { resolvePath } from '../util.js';
 import { createStylePreprocessor } from './style.js';
+import { UnknownCompilerError } from '../errors/errors-data.js';
 
 export interface CompileProps {
 	astroConfig: AstroConfig;
@@ -61,7 +62,7 @@ export async function compile({
 		// The compiler should be able to handle errors by itself, however
 		// for the rare cases where it can't let's directly throw here with as much info as possible
 		throw new CompilerError({
-			...AstroErrorData.UnknownCompilerError,
+			...UnknownCompilerError,
 			message: err.message ?? 'Unknown compiler error',
 			stack: err.stack,
 			location: {
@@ -86,6 +87,7 @@ function handleCompileResultErrors(result: TransformResult, cssTransformErrors: 
 
 	if (compilerError) {
 		throw new CompilerError({
+			name: 'CompilerError',
 			message: compilerError.text,
 			location: {
 				line: compilerError.location.line,

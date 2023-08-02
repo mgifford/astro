@@ -11,7 +11,13 @@ import { renderSlotToString, type ComponentSlots } from '../../runtime/server/in
 import { renderJSX } from '../../runtime/server/jsx.js';
 import { chunkToString } from '../../runtime/server/render/index.js';
 import { AstroCookies } from '../cookies/index.js';
-import { AstroError, AstroErrorData } from '../errors/index.js';
+import {
+	AstroError,
+	ClientAddressNotAvailable,
+	ReservedSlotName,
+	ResponseSentError,
+	StaticClientAddressNotAvailable,
+} from '../errors/index.js';
 import { warn, type LogOptions } from '../logger/core.js';
 
 const clientAddressSymbol = Symbol.for('astro.clientAddress');
@@ -71,8 +77,8 @@ class Slots {
 			for (const key of Object.keys(slots)) {
 				if ((this as any)[key] !== undefined) {
 					throw new AstroError({
-						...AstroErrorData.ReservedSlotName,
-						message: AstroErrorData.ReservedSlotName.message(key),
+						...ReservedSlotName,
+						message: ReservedSlotName.message(key),
 					});
 				}
 				Object.defineProperty(this, key, {
@@ -180,11 +186,11 @@ export function createResult(args: CreateResultArgs): SSRResult {
 					if (!(clientAddressSymbol in request)) {
 						if (args.adapterName) {
 							throw new AstroError({
-								...AstroErrorData.ClientAddressNotAvailable,
-								message: AstroErrorData.ClientAddressNotAvailable.message(args.adapterName),
+								...ClientAddressNotAvailable,
+								message: ClientAddressNotAvailable.message(args.adapterName),
 							});
 						} else {
-							throw new AstroError(AstroErrorData.StaticClientAddressNotAvailable);
+							throw new AstroError(StaticClientAddressNotAvailable);
 						}
 					}
 
@@ -207,7 +213,7 @@ export function createResult(args: CreateResultArgs): SSRResult {
 					// If the response is already sent, error as we cannot proceed with the redirect.
 					if ((request as any)[responseSentSymbol]) {
 						throw new AstroError({
-							...AstroErrorData.ResponseSentError,
+							...ResponseSentError,
 						});
 					}
 

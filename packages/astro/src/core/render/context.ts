@@ -6,7 +6,7 @@ import type {
 	SSRElement,
 	SSRResult,
 } from '../../@types/astro';
-import { AstroError, AstroErrorData } from '../errors/index.js';
+import { AstroError, LocalsNotAnObject } from '../errors/index.js';
 import type { Environment } from './environment';
 import { getParamsAndProps } from './params-and-props.js';
 
@@ -66,7 +66,7 @@ export async function createRenderContext(
 		},
 		set(val) {
 			if (typeof val !== 'object') {
-				throw new AstroError(AstroErrorData.LocalsNotAnObject);
+				throw new AstroError(LocalsNotAnObject);
 			} else {
 				Reflect.set(request, clientLocalsSymbol, val);
 			}

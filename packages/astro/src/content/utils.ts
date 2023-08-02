@@ -14,7 +14,13 @@ import type {
 	ImageInputFormat,
 } from '../@types/astro.js';
 import { VALID_INPUT_FORMATS } from '../assets/consts.js';
-import { AstroError, AstroErrorData } from '../core/errors/index.js';
+import {
+	AstroError,
+	ContentSchemaContainsSlugError,
+	InvalidContentEntryFrontmatterError,
+	InvalidContentEntrySlugError,
+	UnknownContentCollectionError,
+} from '../core/errors/index.js';
 
 import { formatYAMLException, isYAMLException } from '../core/errors/utils.js';
 import { CONTENT_FLAGS, CONTENT_TYPES_FILE } from './consts.js';
@@ -79,8 +85,8 @@ export function parseEntrySlug({
 		return z.string().default(generatedSlug).parse(frontmatterSlug);
 	} catch {
 		throw new AstroError({
-			...AstroErrorData.InvalidContentEntrySlugError,
-			message: AstroErrorData.InvalidContentEntrySlugError.message(collection, id),
+			...InvalidContentEntrySlugError,
+			message: InvalidContentEntrySlugError.message(collection, id),
 		});
 	}
 }
@@ -127,8 +133,8 @@ export async function getEntryData(
 			schema.shape.slug
 		) {
 			throw new AstroError({
-				...AstroErrorData.ContentSchemaContainsSlugError,
-				message: AstroErrorData.ContentSchemaContainsSlugError.message(entry.collection),
+				...ContentSchemaContainsSlugError,
+				message: ContentSchemaContainsSlugError.message(entry.collection),
 			});
 		}
 
@@ -147,8 +153,8 @@ export async function getEntryData(
 		} else {
 			if (!formattedError) {
 				formattedError = new AstroError({
-					...AstroErrorData.InvalidContentEntryFrontmatterError,
-					message: AstroErrorData.InvalidContentEntryFrontmatterError.message(
+					...InvalidContentEntryFrontmatterError,
+					message: InvalidContentEntryFrontmatterError.message(
 						entry.collection,
 						entry.id,
 						parsed.error
@@ -382,7 +388,7 @@ export async function reloadContentConfigObserver({
 	} catch (e) {
 		observer.set({
 			status: 'error',
-			error: e instanceof Error ? e : new AstroError(AstroErrorData.UnknownContentCollectionError),
+			error: e instanceof Error ? e : new AstroError(UnknownContentCollectionError),
 		});
 	}
 }
@@ -489,7 +495,7 @@ export async function getEntrySlug({
 		contents = await fs.promises.readFile(fileUrl, 'utf-8');
 	} catch (e) {
 		// File contents should exist. Raise unexpected error as "unknown" if not.
-		throw new AstroError(AstroErrorData.UnknownContentCollectionError, { cause: e });
+		throw new AstroError(UnknownContentCollectionError, { cause: e });
 	}
 	const { slug: frontmatterSlug } = await contentEntryType.getEntryInfo({
 		fileUrl,

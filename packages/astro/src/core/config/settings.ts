@@ -6,7 +6,7 @@ import { getContentPaths } from '../../content/index.js';
 import jsxRenderer from '../../jsx/renderer.js';
 import { markdownContentEntryType } from '../../vite-plugin-markdown/content-entry-type.js';
 import { getDefaultClientDirectives } from '../client-directive/index.js';
-import { AstroError, AstroErrorData } from '../errors/index.js';
+import { AstroError, DataCollectionEntryParseError } from '../errors/index.js';
 import { formatYAMLException, isYAMLException } from '../errors/utils.js';
 import { SUPPORTED_MARKDOWN_FILE_EXTENSIONS } from './../constants.js';
 import { AstroTimer } from './timer.js';
@@ -38,8 +38,8 @@ export function createBaseSettings(config: AstroConfig): AstroSettings {
 						data = JSON.parse(contents);
 					} catch (e) {
 						throw new AstroError({
-							...AstroErrorData.DataCollectionEntryParseError,
-							message: AstroErrorData.DataCollectionEntryParseError.message(
+							...DataCollectionEntryParseError,
+							message: DataCollectionEntryParseError.message(
 								pathRelToContentDir,
 								e instanceof Error ? e.message : 'contains invalid JSON.'
 							),
@@ -50,8 +50,8 @@ export function createBaseSettings(config: AstroConfig): AstroSettings {
 
 					if (data == null || typeof data !== 'object') {
 						throw new AstroError({
-							...AstroErrorData.DataCollectionEntryParseError,
-							message: AstroErrorData.DataCollectionEntryParseError.message(
+							...DataCollectionEntryParseError,
+							message: DataCollectionEntryParseError.message(
 								pathRelToContentDir,
 								'data is not an object.'
 							),
@@ -80,8 +80,8 @@ export function createBaseSettings(config: AstroConfig): AstroSettings {
 							: new Error('contains invalid YAML.');
 
 						throw new AstroError({
-							...AstroErrorData.DataCollectionEntryParseError,
-							message: AstroErrorData.DataCollectionEntryParseError.message(
+							...DataCollectionEntryParseError,
+							message: DataCollectionEntryParseError.message(
 								pathRelToContentDir,
 								formattedError.message
 							),

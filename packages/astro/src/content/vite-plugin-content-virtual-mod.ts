@@ -5,7 +5,12 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import pLimit from 'p-limit';
 import type { Plugin } from 'vite';
 import type { AstroSettings, ContentEntryType } from '../@types/astro.js';
-import { AstroError, AstroErrorData } from '../core/errors/index.js';
+import {
+	AstroError,
+	DuplicateContentEntrySlugError,
+	MixedContentDataCollectionError,
+	UnknownContentCollectionError,
+} from '../core/errors/index.js';
 import { appendForwardSlash } from '../core/path.js';
 import { rootRelativePath } from '../core/util.js';
 import { VIRTUAL_MODULE_ID } from './consts.js';
@@ -145,8 +150,8 @@ export async function getStringifiedLookupMap({
 
 				if (lookupMap[collection]?.type && lookupMap[collection].type !== entryType) {
 					throw new AstroError({
-						...AstroErrorData.MixedContentDataCollectionError,
-						message: AstroErrorData.MixedContentDataCollectionError.message(collection),
+						...MixedContentDataCollectionError,
+						message: MixedContentDataCollectionError.message(collection),
 					});
 				}
 
@@ -169,8 +174,8 @@ export async function getStringifiedLookupMap({
 					});
 					if (lookupMap[collection]?.entries?.[slug]) {
 						throw new AstroError({
-							...AstroErrorData.DuplicateContentEntrySlugError,
-							message: AstroErrorData.DuplicateContentEntrySlugError.message(collection, slug),
+							...DuplicateContentEntrySlugError,
+							message: DuplicateContentEntrySlugError.message(collection, slug),
 							hint:
 								slug !== generatedSlug
 									? `Check the \`slug\` frontmatter property in **${id}**.`
@@ -204,7 +209,7 @@ export async function getStringifiedLookupMap({
 }
 
 const UnexpectedLookupMapError = new AstroError({
-	...AstroErrorData.UnknownContentCollectionError,
+	...UnknownContentCollectionError,
 	message: `Unexpected error while parsing content entry IDs and slugs.`,
 });
 

@@ -1,5 +1,5 @@
 import type { PropagationHint } from '../../@types/astro';
-import { AstroError, AstroErrorData } from '../../core/errors/index.js';
+import { AstroError, InvalidComponentArgs } from '../../core/errors/index.js';
 import type { AstroComponentFactory } from './render/index.js';
 
 function validateArgs(args: unknown[]): args is Parameters<AstroComponentFactory> {
@@ -16,8 +16,8 @@ function baseCreateComponent(
 	const fn = (...args: Parameters<AstroComponentFactory>) => {
 		if (!validateArgs(args)) {
 			throw new AstroError({
-				...AstroErrorData.InvalidComponentArgs,
-				message: AstroErrorData.InvalidComponentArgs.message(name),
+				...InvalidComponentArgs,
+				message: InvalidComponentArgs.message(name),
 			});
 		}
 		return cb(...args);

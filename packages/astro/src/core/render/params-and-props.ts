@@ -1,5 +1,9 @@
 import type { ComponentInstance, Params, Props, RouteData } from '../../@types/astro';
-import { AstroError, AstroErrorData } from '../errors/index.js';
+import {
+	AstroError,
+	NoMatchingStaticPathFound,
+	PrerenderDynamicEndpointPathCollide,
+} from '../errors/index.js';
 import type { LogOptions } from '../logger/core.js';
 import { getParams } from '../routing/params.js';
 import { RouteCache, callGetStaticPaths, findPathItemByKey } from './route-cache.js';
@@ -40,9 +44,9 @@ export async function getParamsAndProps(opts: GetParamsAndPropsOptions): Promise
 	const matchedStaticPath = findPathItemByKey(staticPaths, params, route);
 	if (!matchedStaticPath && (ssr ? route.prerender : true)) {
 		throw new AstroError({
-			...AstroErrorData.NoMatchingStaticPathFound,
-			message: AstroErrorData.NoMatchingStaticPathFound.message(pathname),
-			hint: AstroErrorData.NoMatchingStaticPathFound.hint([route.component]),
+			...NoMatchingStaticPathFound,
+			message: NoMatchingStaticPathFound.message(pathname),
+			hint: NoMatchingStaticPathFound.hint([route.component]),
 		});
 	}
 
@@ -80,9 +84,9 @@ function validatePrerenderEndpointCollision(
 		// `foo[slug].js` by checking segment length === 1. Also check here if that param is undefined.
 		if (lastSegment.length === 1 && lastSegment[0].dynamic && lastParam === undefined) {
 			throw new AstroError({
-				...AstroErrorData.PrerenderDynamicEndpointPathCollide,
-				message: AstroErrorData.PrerenderDynamicEndpointPathCollide.message(route.route),
-				hint: AstroErrorData.PrerenderDynamicEndpointPathCollide.hint(route.component),
+				...PrerenderDynamicEndpointPathCollide,
+				message: PrerenderDynamicEndpointPathCollide.message(route.route),
+				hint: PrerenderDynamicEndpointPathCollide.hint(route.component),
 				location: {
 					file: route.component,
 				},

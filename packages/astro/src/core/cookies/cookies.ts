@@ -1,6 +1,6 @@
 import type { CookieSerializeOptions } from 'cookie';
 import { parse, serialize } from 'cookie';
-import { AstroError, AstroErrorData } from '../errors/index.js';
+import { AstroError, ResponseSentError } from '../errors/index.js';
 
 interface AstroCookieSetOptions {
 	domain?: string;
@@ -109,11 +109,10 @@ class AstroCookies implements AstroCookiesInterface {
 		}
 
 		const values = this.#ensureParsed();
-		if(key in values) {
+		if (key in values) {
 			const value = values[key];
 			return new AstroCookie(value);
 		}
-
 	}
 
 	/**
@@ -168,7 +167,7 @@ class AstroCookies implements AstroCookiesInterface {
 
 		if ((this.#request as any)[responseSentSymbol]) {
 			throw new AstroError({
-				...AstroErrorData.ResponseSentError,
+				...ResponseSentError,
 			});
 		}
 	}
